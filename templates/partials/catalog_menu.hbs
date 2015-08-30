@@ -1,0 +1,91 @@
+<!--Mobile Menu Toggle-->
+<div class="menu-toggle"><i class="fa fa-list"></i></div>
+<div class="mobile-border"><span></span></div>
+
+<!--Main Menu-->
+<nav class="menu">
+<ul class="main">
+    <li class="has-submenu"><a href="/">Главная</a><!--Class "has-submenu" for proper highlighting and dropdown-->
+    <li class="hide-sm has-submenu"><a href="/about">Магазин<i class="fa fa-chevron-down"></i></a>
+        <ul class="submenu">
+            <li><a href="/delivery">Доставка</a></li>
+            <li><a href="/anonymity">Анонимность и конфиденциальность</a></li>
+            <li><a href="/guarantee">Гарантия и возврат</a></li>
+            <li><a href="/payment">Оплата</a></li>
+        </ul>
+    </li>
+    <li class="{{!hide-sm}} has-submenu"><a href="/support">Помощь от LUXYsexy</a>
+        <ul class="submenu">
+            <li><a href="/order">Как сделать заказ</a></li>
+            <li><a href="/sizes">Таблицы размеров</a></li>
+            <li><a href="/feedback">Обратная связь</a></li>
+            <li><a href="/contacts">Контакты</a></li>
+        </ul>
+    </li>
+    <li class="{{!hide-sm}}">
+        <a href="javascript:chooseCity()"><i class="fa fa-map-marker"></i>&nbsp;{{#if factory.from.query.city}}{{factory.from.query.city.title}}{{else}}Указать город{{/if}}</a>
+    </li>
+</ul>
+<ul class="catalog">
+    <li class="has-submenu"><a href="{{tree.dlya-nee.path}}">{{tree.dlya-nee.title}}<i class="fa fa-chevron-down"></i></a>
+        <ul class="submenu">
+            <li>
+                <a href="{{tree.analnaya-stimulyaciya.path}}">{{tree.analnaya-stimulyaciya.title}}</a>
+            </li>
+
+            {{#each tree.dlya-nee.childs}}
+                <li><a href="{{path}}">{{title}}</a></li>
+            {{/each}}
+        </ul>
+    </li>
+
+    <li class="has-submenu"><a href="{{tree.dlya-nego.path}}">{{tree.dlya-nego.title}}<i class="fa fa-chevron-down"></i></a>
+        <ul class="submenu">
+            <li class="">
+                <a href="{{tree.analnaya-stimulyaciya.path}}">{{tree.analnaya-stimulyaciya.title}}</a>
+            </li>
+
+            {{#each tree.dlya-nego.childs}}
+                <li><a href="{{path}}">{{title}}</a></li>
+            {{/each}}
+        </ul>
+    </li>
+
+    <li class="has-submenu"><a href="{{tree.dlya-dvoih.path}}">{{tree.dlya-dvoih.title}}<i class="fa fa-chevron-down"></i></a>
+        <ul class="submenu">
+            <li class="">
+                <a href="{{tree.analnaya-stimulyaciya.path}}">{{tree.analnaya-stimulyaciya.title}}</a>
+            </li>
+
+            {{#each tree.dlya-dvoih.childs}}
+                <li><a href="{{path}}">{{title}}</a></li>
+            {{/each}}
+        </ul>
+    </li>
+
+    <li class="has-submenu"><a href="{{tree.eroticheskaya-odezhda-i-bele.path}}">Бельё и одежда<i class="fa fa-chevron-down"></i></a>
+        <ul class="submenu">
+            {{#each tree.eroticheskaya-odezhda-i-bele.childs}}
+                <li><a href="{{path}}">{{title}}</a></li>
+            {{/each}}
+        </ul>
+    </li>
+
+
+    <li class="has-submenu"><a href="{{tree.fetish-i-bdsm.path}}">BDSM<i class="fa fa-chevron-down"></i></a>
+        <ul class="submenu">
+            {{#each tree.fetish-i-bdsm.childs}}
+                <li><a href="{{path}}">{{title}}</a></li>
+            {{/each}}
+        </ul>
+    </li>
+
+    <li class="hide-sm has-submenu"><a href="{{tree.prezervativy-i-smazki.path}}">{{tree.prezervativy-i-smazki.title}}<i class="fa fa-chevron-down"></i></a>
+        <ul class="submenu">
+            {{#each tree.prezervativy-i-smazki.childs}}
+                <li><a href="{{path}}">{{title}}</a></li>
+            {{/each}}
+        </ul>
+    </li>
+</ul>
+</nav>

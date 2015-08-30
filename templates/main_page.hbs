@@ -1,0 +1,49 @@
+<!--Categories Slider-->
+<section class="category-slider">
+    <div class="master-slider" id="cat-slider">
+
+
+        {{#each categories}}
+            {{#if this.category}}
+                <div class="ms-slide">
+                    <!--Background-->
+
+                    <img src="/masterslider/blank.gif" data-src="/img/categories/slides/bg_{{bg}}.png"/>
+
+
+                    {{#with category}}
+                        <!--Text-->
+                        <div class="ms-layer text-block" data-effect="left(50,true)" data-duration="800" data-delay="250" data-ease="easeOutQuad">
+                            <h2 class="{{../color}}-color">{{{mainImage.alt}}}</h2>
+                            <p class="{{../color}}-color">{{{mainSmallImage.alt}}}</p>
+                            <a class="btn btn-primary" href="/{{_id}}">Хочу!</a>
+                            {{!<a class="btn btn-success" href="#">Browse all PC</a>}}
+                        </div>
+                        <!--Image-->
+                        <img style="right: 50px;" class="ms-layer img-block" src="http://luxy.sexy{{mainImage.path}}" alt="{{mainImage.alt}}" data-effect="back(500)" data-duration="800" data-delay="350" data-ease="easeOutQuad"/>
+                        <div class="ms-thumb">
+                            <img src="http://luxy.sexy{{mainSmallImage.path}}" alt="{{{mainSmallImage.alt}}}"/>
+                            <h3>{{title}}</h3>
+                        </div>
+                    {{/with}}
+                </div>
+            {{/if}}
+        {{/each}}
+
+    </div>
+</section><!--Categories Slider Close-->
+
+
+{{#if newcomers.length}}
+    <!--Catalog Grid-->
+    <section class="catalog-grid">
+        <div class="container">
+            <h2 class="primary-color">Новинки</h2>
+            <div class="row">
+                {{#each newcomers}}
+                    {{include 'shop.product-card' this}}
+                {{/each}}
+            </div>
+        </div>
+    </section><!--Catalog Grid Close-->
+{{/if}}

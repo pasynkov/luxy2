@@ -1,0 +1,42 @@
+{{{breadcrumbs}}}breadcrumbs
+<section class="catalog-grid">
+    <div class="container">
+        <h1 class="with-sorting">{{category.title}}</h1>
+
+        <div class="sorting">
+            <a href="?{{sort.title.url}}" class="{{#if sort.title.active}}sorted{{/if}}">По имени</a>
+            <a href="?{{sort.price.url}}" class="{{#if sort.price.active}}sorted{{/if}}">По цене</a>
+        </div>
+        {{#if category.description}}
+            <div class="category-desc hide">
+                {{{category.description}}}
+            </div>
+        {{/if}}
+
+        {{#if categories}}
+            <div class="subnav">
+                {{#each categories}}
+                    <a href="{{url}}" {{#if hide}}class="hide"{{/if}}>{{title}}</a>
+                {{/each}}
+                <a href="javascript:void(0)" class="more" onclick="$('.subnav .hide').removeClass('hide');$(this).hide();">Еще</a>
+            </div>
+        {{/if}}
+
+
+
+        <div class="row">
+            {{#each products}}
+                {{> "product"}}
+            {{/each}}
+        </div>
+
+        {{#if pagination}}
+            {{#with pagination}}
+                {{> "pagination"}}
+            {{/with}}
+        {{/if}}
+
+    </div>
+
+</section><!--Catalog Grid Close-->
+
