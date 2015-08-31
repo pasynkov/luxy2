@@ -22,10 +22,9 @@ class StaticDecorator
   readTemplate: (name, callback)=>
     templatePath = path.resolve TEMPLATES_PATH, "#{name}.hbs"
 
-    @redis.getex(
+    @redis.get(
       "#{vakoo.configurator.instanceName}-static-#{templatePath}"
       async.apply @static.readFile, templatePath
-      @redisTtl
       callback
     )
 
