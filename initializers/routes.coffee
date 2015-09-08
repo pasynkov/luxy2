@@ -10,7 +10,7 @@ class RoutesInitializer
     @storageDecorator = new StorageDecorator
     @utilsDecorator = new UtilsDecorator
 
-    @logger = vakoo.logger.initializer
+    @logger = vakoo.logger.routesInitializer
 
     @logger.info "Start create routes"
 

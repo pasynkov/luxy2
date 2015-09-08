@@ -8,7 +8,7 @@ class CacheInitializer
 
     @storageDecorator = new StorageDecorator
 
-    @logger = vakoo.logger.initializer
+    @logger = vakoo.logger.cacheInitializer
 
     @logger.info "Start cache storage data"
 
