@@ -113,10 +113,6 @@ class Aggregator
                     parseString body, subTaskCallback
                   (xml, subTaskCallback)=>
 
-                    console.log xml.yml_catalog.shop[0].categories[0].category
-
-                    console.log xml.yml_catalog.shop[0].offers[0].offer
-
                     subTaskCallback null, _.map(
                       xml.yml_catalog.shop[0].offers[0].offer
                       (item)->
@@ -144,10 +140,7 @@ class Aggregator
                   return done err
 
                 unless cat
-                  @logger.info "Not found cat for `#{item.cat_id}`"
                   return done()
-
-                console.log item.sku, cat.title, cat.ancestors
 
                 @mongo.collection("products2").update(
                   {sku: item.sku}
@@ -166,6 +159,7 @@ class Aggregator
         (taskCallback)=>
 
           @logger.info "Products updated"
+          taskCallback()
 
       ]
       callback
@@ -399,6 +393,7 @@ class Aggregator
         (taskCallback)=>
 
           @logger.info "Done create categories"
+          taskCallback()
 
       ]
       callback
