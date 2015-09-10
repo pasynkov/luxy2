@@ -29,7 +29,7 @@ class RoutesInitializer
           taskCallback null, categories
 
       ]
-      (err, routes)->
+      (err, routes)=>
 
         if err
 

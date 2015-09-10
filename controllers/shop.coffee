@@ -119,6 +119,9 @@ class ShopController
         }
         ({product, productTemplate}, taskCallback)=>
 
+          unless product
+            return @category()
+
           product.miniDesc = product.desc
           product.url = @utilsDecorator.createUrl product
           product.price = @utilsDecorator.numberFormat product.price, true

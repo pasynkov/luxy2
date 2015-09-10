@@ -6,27 +6,12 @@ projectConfig =
 
     redis:
       enable: true
-#      startupClean: true
 
     mongo:
       name: "luxy"
       enable: true
 
-    mysql:
-      host: "rangg.ru"
-      user: "root"
-      password: "085bdb2261"
-      database: "luxy"
-
-  web:
-    enable: true
-    static: "static"
-    cacheStatic: true
-    port: 8088
-
   loggers:
-    routesInitializer: {}
-    cacheInitializer: {}
     aggregator: {}
 
   aggregator: {
@@ -39,13 +24,13 @@ projectConfig =
 #    csv: "http://stripmag.ru/datafeed/p5s_ling.csv"
   }
 
-  initializers: [
-#    "aggregator"
-    "cache"
-    "routes"
+  crons: [
+    {
+      name: "Products aggregator"
+      time: "* * * * * *"
+      script: "aggregator"
+    }
   ]
-
-
 
 
 module.exports = projectConfig

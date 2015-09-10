@@ -59,6 +59,7 @@ categoryObject = ->
 class Aggregator
 
   constructor: (callback)->
+    return callback()
 
     @logger = vakoo.logger.aggregator
 
@@ -82,7 +83,7 @@ class Aggregator
       [
 #        @aggregateProducts
 #        @createCategories
-        @updatePrices
+#        @updatePrices
       ]
       (err)=>
         if err
@@ -121,9 +122,9 @@ class Aggregator
                       xml.yml_catalog.shop[0].offers[0].offer
                       (item)->
                         {
-                          price: +item.price[0]
-                          cat_id: +item.categoryId[0]
-                          sku: +item.vendorCode[0]
+                        price: +item.price[0]
+                        cat_id: +item.categoryId[0]
+                        sku: +item.vendorCode[0]
                         }
                     )
                 ]
@@ -620,59 +621,59 @@ class Aggregator
     images = product.photos[1...]
 
     return {
+    title: product.title
+    alias: slugify("#{product.sku} #{product.title}")
+    category: ""
+    ancestors: []
+    price: product.price
+    tradePrice: product.tradePrice
+    sku: product.sku
+    desc: product.desc
+    shortDesc: ""
+    status: "active"
+    available: product.available
+    meta: {
+      description: product.desc
       title: product.title
-      alias: slugify("#{product.sku} #{product.title}")
-      category: ""
-      ancestors: []
-      price: product.price
-      tradePrice: product.tradePrice
-      sku: product.sku
-      desc: product.desc
-      shortDesc: ""
-      status: "active"
-      available: product.available
-      meta: {
-        description: product.desc
-        title: product.title
-        keywords: ""
-      }
-      params: {
-        benefits: []
-        items: _.filter(
-          [
-            ["Брэнд", product.distributor.split(":")[0]]
-            ["Материал", product.material]
-            ["Цвет", product.color]
-            ["Размер", product.size]
-            ["Упаковка", product.packing]
-            ["Батарейки", product.battery]
-            ["Вес", product.weight]
-          ]
-          (item)->
-            return item[1]? and item[1].length
-        )
-      }
-      size: {
-        current: product.size
-        sizes: false
-      }
-      image: {
+      keywords: ""
+    }
+    params: {
+      benefits: []
+      items: _.filter(
+        [
+          ["Брэнд", product.distributor.split(":")[0]]
+          ["Материал", product.material]
+          ["Цвет", product.color]
+          ["Размер", product.size]
+          ["Упаковка", product.packing]
+          ["Батарейки", product.battery]
+          ["Вес", product.weight]
+        ]
+        (item)->
+          return item[1]? and item[1].length
+      )
+    }
+    size: {
+      current: product.size
+      sizes: false
+    }
+    image: {
+      name: ""
+      alt: product.title
+      path: image
+    }
+    images: _.map(
+      images
+      (image)->
+        image = image.replace("/Users/Pasa/dev/tmp", "")
+        return {
         name: ""
         alt: product.title
         path: image
-      }
-      images: _.map(
-        images
-        (image)->
-          image = image.replace("/Users/Pasa/dev/tmp", "")
-          return {
-            name: ""
-            alt: product.title
-            path: image
-          }
-      )
-      lastUpdate: new Date()
-      isNew: true
+        }
+    )
+    lastUpdate: new Date()
+    isNew: true
     }
 
 
