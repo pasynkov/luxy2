@@ -661,7 +661,7 @@ class Aggregator
       }
       images: _.map(
         images
-        (image)->
+        (image)=>
           image = image.replace(@config.filePath.replace("/files",""), "")
           return {
             name: ""
