@@ -560,13 +560,15 @@ class Aggregator
                   (..., taskCallback)->
                     fs.exists imagePath, (exists)->
                       taskCallback null, exists
-                  (exists, taskCallback)->
+                  (exists, taskCallback)=>
 
                     if exists
                       return taskCallback()
 
                     request.get photoLink
-                    .on "error", taskCallback
+                    .on "error", (err)=>
+                      @logger.error "Get image failed with err: `#{err}`"
+                      taskCallback()
                     .on "end", ->
                       taskCallback()
                     .pipe fs.createWriteStream(imagePath)
