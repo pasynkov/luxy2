@@ -567,7 +567,6 @@ class Aggregator
 
                     request.get photoLink
                     .on "error", (err)=>
-                      @logger.error "Get image from `#{photoLink}` failed with err: `#{err}`"
                       @addImageToDownloadQueue photoLink, imagePath, taskCallback
                     .on "end", ->
                       taskCallback()
