@@ -19,6 +19,7 @@ projectConfig =
 
   loggers:
     aggregator: {}
+    imageGetter: {}
 
   aggregator: {
     csv: "http://stripmag.ru/datafeed/p5s.csv"
@@ -33,10 +34,15 @@ projectConfig =
 #      time: "* * * * * *"
 #      script: "aggregator"
 #    }
+    {
+      name: "Image downloader"
+      time: "*/5 * * * * *"
+      script: "image-getter"
+    }
   ]
 
   initializers: [
-    "aggregator"
+#    "aggregator"
   ]
 
 

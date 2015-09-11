@@ -568,7 +568,7 @@ class Aggregator
                     request.get photoLink
                     .on "error", (err)=>
                       @logger.error "Get image from `#{photoLink}` failed with err: `#{err}`"
-                      taskCallback()
+                      @addImageToDownloadQueue photoLink, imagePath, taskCallback
                     .on "end", ->
                       taskCallback()
                     .pipe fs.createWriteStream(imagePath)
@@ -674,6 +674,18 @@ class Aggregator
       lastUpdate: new Date()
       isNew: true
     }
+
+  addImageToDownloadQueue: (link, destination, callback)=>
+
+    @logger.info "add image `#{link}` to queue"
+
+    @redis.client.rpush(
+      "images-queue"
+      "#{link}==#{destination}"
+      (err)->
+        callback err
+    )
+
 
 
 
