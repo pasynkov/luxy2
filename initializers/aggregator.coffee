@@ -613,7 +613,7 @@ class Aggregator
 
   createObject: (product)=>
 
-    image = product.photos[0].replace("/Users/Pasa/dev/tmp", "")
+    image = product.photos[0].replace(@config.filePath.replace("/files",""), "")
 
     images = product.photos[1...]
 
@@ -662,7 +662,7 @@ class Aggregator
       images: _.map(
         images
         (image)->
-          image = image.replace("/Users/Pasa/dev/tmp", "")
+          image = image.replace(@config.filePath.replace("/files",""), "")
           return {
             name: ""
             alt: product.title
