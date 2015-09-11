@@ -9,7 +9,7 @@ class StorageDecorator
 
   constructor: (@context)->
 
-    @mysql = vakoo.storage.mysql.main
+    @mysql = vakoo.storage.mysql?.main
     @redis = vakoo.storage.redis.main
     @mongo = vakoo.storage.mongo.main
 

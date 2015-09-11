@@ -75,7 +75,9 @@ class Aggregator
 
     @instanceName = vakoo.configurator.instanceName
 
-    @config = vakoo.configurator.projectConfig.aggregator
+    @config = vakoo.configurator.config.aggregator
+
+    console.log vakoo.configurator.config
 
     @updated = 0
     @inserted = 0
