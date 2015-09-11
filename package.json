@@ -12,7 +12,7 @@
     "request": "^2.61.0",
     "transliteration": "^0.1.1",
     "underscore": "^1.8.3",
-    "vakoo": "^0.0.7",
+    "vakoo": "0.0.x",
     "xml2js": "^0.4.12"
   },
   "devDependencies": {},
