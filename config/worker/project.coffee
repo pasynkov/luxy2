@@ -42,7 +42,7 @@ projectConfig =
   ]
 
   initializers: [
-    "aggregator"
+#    "aggregator"
   ]
 
 
