@@ -18,6 +18,9 @@ fs = require "graceful-fs"
 
 StorageDecorator = require "../decorators/storage"
 
+COL_CATEGORIES = "categories2"
+COL_PRODUCTS = "products2"
+
 categoryObject = ->
   _.clone({
     "_id" : "",
@@ -80,8 +83,8 @@ class Aggregator
 
     async.waterfall(
       [
-#        @aggregateProducts
-#        @createCategories
+        @aggregateProducts
+        @createCategories
         @updatePrices
       ]
       (err)=>
@@ -135,14 +138,14 @@ class Aggregator
             list
             (item, done)=>
 
-              @mongo.collection("categories2").findOne {"import.id": item.cat_id}, (err, cat)=>
+              @mongo.collection(COL_CATEGORIES).findOne {"import.id": item.cat_id}, (err, cat)=>
                 if err
                   return done err
 
                 unless cat
                   return done()
 
-                @mongo.collection("products2").update(
+                @mongo.collection(COL_PRODUCTS).update(
                   {sku: item.sku}
                   $set:
                     price: item.price
@@ -319,12 +322,12 @@ class Aggregator
                 async.mapSeries(
                   catstree
                   (subcat, subDone)=>
-                    @mongo.collection("categories2").findOne {_id: subcat}, (err, subCatObject)=>
+                    @mongo.collection(COL_CATEGORIES).findOne {_id: subcat}, (err, subCatObject)=>
                       if err
                         return subDone err
                       if subCatObject
                         if _.indexOf(catstree, subcat) is (catstree.length - 1)
-                          @mongo.collection("categories2").update {_id: subcat}, {$set: {title: cat.title, import: {id: cat.id}}}, (err)->
+                          @mongo.collection(COL_CATEGORIES).update {_id: subcat}, {$set: {title: cat.title, import: {id: cat.id}}}, (err)->
                             subDone err
                         else
                           subDone()
@@ -334,14 +337,14 @@ class Aggregator
                         if _.indexOf(catstree, subcat) is (catstree.length - 1)
                           subCatObject.title = cat.title
                           subCatObject.import = {id: cat.id}
-                        @mongo.collection("categories2").insert subCatObject, (err)->
+                        @mongo.collection(COL_CATEGORIES).insert subCatObject, (err)->
                           subDone err
                   (err)=>
                     done err
                 )
 
               else
-                @mongo.collection("categories2").update(
+                @mongo.collection(COL_CATEGORIES).update(
                   {_id: cat.href}
                   {$set: {import: {id: cat.id}}}
                   done
@@ -364,7 +367,7 @@ class Aggregator
                 async.map(
                   catstree
                   (subcat, subDone)=>
-                    @mongo.collection("categories2").findOne {_id: subcat}, subDone
+                    @mongo.collection(COL_CATEGORIES).findOne {_id: subcat}, subDone
                   (err, catlist)=>
                     catlist = _.map catlist, (c)-> _.pick(c, ["_id", "title", "parent", "ancestors"])
 
@@ -377,7 +380,7 @@ class Aggregator
                     async.map(
                       catlist
                       (catFromList, subsubDone)=>
-                        @mongo.collection("categories2").update {_id: catFromList._id}, {$set: catFromList}, subsubDone
+                        @mongo.collection(COL_CATEGORIES).update {_id: catFromList._id}, {$set: catFromList}, subsubDone
                       done
                     )
 
@@ -579,7 +582,7 @@ class Aggregator
           )
         (..., taskCallback)=>
 
-          @mongo.collection(@config.collectionName).findOne(
+          @mongo.collection(COL_PRODUCTS).findOne(
             {sku: product.sku}
             taskCallback
           )
@@ -587,7 +590,7 @@ class Aggregator
         (mongoObj, taskCallback)=>
           if mongoObj
             @updated++
-            @mongo.collection(@config.collectionName).update(
+            @mongo.collection(COL_PRODUCTS).update(
               {_id: mongoObj._id}
               {$set:
                 available: product.available
@@ -600,7 +603,7 @@ class Aggregator
             )
           else
             @inserted++
-            @mongo.collection(@config.collectionName).insert(
+            @mongo.collection(COL_PRODUCTS).insert(
               @createObject(product)
               taskCallback
             )
