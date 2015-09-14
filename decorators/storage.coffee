@@ -5,6 +5,8 @@ _ = require "underscore"
 COL_CATEGORIES = "categories2"
 COL_PRODUCTS = "products2"
 
+UtilsDecorator = require "../decorators/utils"
+
 class StorageDecorator
 
   constructor: (@context)->
@@ -14,6 +16,8 @@ class StorageDecorator
     @mongo = vakoo.storage.mongo.main
 
     @redisTtl = 600
+
+    @utilsDecorator = new UtilsDecorator
 
 
   mainSliderData: (callback)=>
@@ -33,18 +37,20 @@ class StorageDecorator
         callback null, settings
     )
 
+  getPage: (alias, callback)=>
+    @redis.getex(
+      "#{vakoo.instanceName}-page-#{alias}"
+      async.apply @mongo.collection("pages").findOne, {alias}
+      @redisTtl
+      callback
+    )
+
   getMainSliderCategories: (callback)=>
 
     @redis.getex(
       "#{vakoo.configurator.instanceName}-main-slider-categories"
-      (redisCallback)=>
-        @mongo.collection(COL_CATEGORIES).find {main: true}, (err, cursor)->
-          if err
-            return redisCallback err
-
-          cursor.toArray redisCallback
-
-      600
+      async.apply @mongo.collection(COL_CATEGORIES).find, main: true
+      @redisTtl
       callback
     )
 
@@ -53,7 +59,7 @@ class StorageDecorator
     @redis.getex(
       "#{vakoo.configurator.instanceName}-main-slider-settings"
       (redisCallback)=>
-        @mysql.client.query "SELECT * FROM main_slider_settings", (err, rows)->
+        @mysql.execute "SELECT * FROM main_slider_settings", (err, rows)->
           redisCallback err, _.indexBy(rows, (r)->r.category)
       @redisTtl
       callback
@@ -63,14 +69,7 @@ class StorageDecorator
 
     @redis.getex(
       "#{vakoo.configurator.instanceName}-categories-list"
-      (redisCallback)=>
-        @mongo.collection(COL_CATEGORIES).find (err, cursor)->
-
-          if err
-            return redisCallback err
-
-          cursor.toArray redisCallback
-
+      async.apply @mongo.collection(COL_CATEGORIES).find
       @redisTtl
       callback
     )
@@ -126,14 +125,61 @@ class StorageDecorator
     )
 
   getCategory: (name, callback)=>
-
     @redis.getex(
       "#{vakoo.configurator.instanceName}-category-#{name}"
       (redisCallback)=>
-
-        @mongo.collection(COL_CATEGORIES).findOne {_id: name}, redisCallback
-
+        @mongo.collectionNative(COL_CATEGORIES).findOne {_id: name}, redisCallback
       @redisTtl
+      callback
+    )
+
+  getBreadcrumbsForCategory: (categoryName, callback)=>
+
+    @redis.getex(
+      "#{vakoo.configurator.instanceName}-breadcrumbs-for-category-#{categoryName}"
+      async.apply async.waterfall, [
+        async.apply @getCategory, categoryName
+        ([category]..., taskCallback)=>
+          async.map(
+            category?.ancestors or []
+            @getCategory
+            (err, categories)->
+              if err
+                return taskCallback err
+              taskCallback null, _.compact _.flatten [categories, category]
+          )
+        (list, taskCallback)=>
+          result = _.map(
+            list
+            (item, i)=>
+              {title: item.title, url: @utilsDecorator.createUrl(item)}
+          )
+
+          crumbs = [{title: "Главная", url: "/"}]
+          crumbs = crumbs.concat result
+
+          taskCallback null, crumbs
+      ]
+      @redisTtl
+      callback
+    )
+
+  getBreadcrumbsForProduct: (productName, callback)=>
+
+    async.waterfall(
+      [
+        async.apply @getProductByAlias, productName
+        (product, taskCallback)=>
+          @getBreadcrumbsForCategory product.category, (err, crumbs)=>
+            if err
+              return taskCallback err
+
+            crumbs.push {
+              title: product.title
+            }
+
+            taskCallback null, crumbs
+      ]
       callback
     )
 
@@ -162,7 +208,7 @@ class StorageDecorator
       "#{vakoo.configurator.instanceName}-products-of-#{categoryName}-#{skip}-#{limit}-#{sort.join(",")}"
       (redisCallback)=>
 
-        @mongo.collection(COL_PRODUCTS).find {ancestors: categoryName}, {sort}, (err, cursor)->
+        @mongo.collectionNative(COL_PRODUCTS).find {ancestors: categoryName}, {sort}, (err, cursor)->
           if err
             return redisCallback err
           cursor.skip(skip).limit(limit).toArray redisCallback
@@ -175,10 +221,7 @@ class StorageDecorator
 
     @redis.getex(
       "#{vakoo.configurator.instanceName}-products-count-of-#{categoryName}"
-      (redisCallback)=>
-
-        @mongo.collection(COL_PRODUCTS).count {ancestors: categoryName}, redisCallback
-
+      async.apply @mongo.collection(COL_PRODUCTS).count, {ancestors: categoryName}
       @redisTtl
       callback
     )
@@ -187,13 +230,7 @@ class StorageDecorator
 
     @redis.getex(
       "#{vakoo.configurator.instanceName}-subcategories-of-#{category}"
-      (redisCallback)=>
-
-        @mongo.collection(COL_CATEGORIES).find {parent: category}, (err, cursor)->
-          if err
-            return redisCallback err
-          cursor.toArray redisCallback
-
+      async.apply @mongo.collection(COL_CATEGORIES).find, {parent: category}
       @redisTtl
       callback
     )
@@ -202,10 +239,7 @@ class StorageDecorator
 
     @redis.getex(
       "#{vakoo.configurator.instanceName}-product-#{product}"
-      (redisCallback)=>
-
-        @mongo.collection(COL_PRODUCTS).findOne {alias: product}, redisCallback
-
+      async.apply @mongo.collection(COL_PRODUCTS).findOne, {alias: product}
       @redisTtl
       callback
     )

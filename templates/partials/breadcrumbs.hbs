@@ -1,0 +1,20 @@
+<ol class="breadcrumb">
+    {{!--<li class="history">
+        <a href="{{#second factory._data.history}}{{url}}{{/second}}" class="history-open"><span class="fa fa-caret-left"></span>&nbsp;Назад</a>&nbsp;&nbsp;<span class="fa fa-history"></span>&nbsp;&nbsp;
+        <ul class="history-dropdown">
+            {{#keyinRange factory._data.history 1 100}}
+                <li><a href="{{url}}">{{title}}</a></li>
+            {{/keyinRange}}
+        </ul>
+    </li>--}}
+
+    <li><a href="javascript:history.back()" class="history-open"><span class="fa fa-caret-left"></span>&nbsp;Назад</a>&nbsp;&nbsp;<span class="fa fa-history"></span>&nbsp;&nbsp;</li>
+
+    {{#each crumbs}}
+        {{#if url}}
+            <li><a href="{{url}}">{{title}}</a></li>
+        {{else}}
+            <li>{{title}}</li>
+        {{/if}}
+    {{/each}}
+</ol>

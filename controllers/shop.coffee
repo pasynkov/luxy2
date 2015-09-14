@@ -26,13 +26,16 @@ class ShopController
         async.apply async.parallel, {
           mainTemplate: async.apply @staticDecorator.createTemplate, "main_page"
           mainSliderData: @storageDecorator.mainSliderData
+          mainPage: async.apply @storageDecorator.getPage, "main"
         }
 
-        ({mainTemplate, mainSliderData}, taskCallback)->
+        ({mainTemplate, mainSliderData, mainPage}, taskCallback)->
 
-          taskCallback null, mainTemplate {
+          taskCallback null, mainTemplate({
             categories: mainSliderData
-          }
+            title: mainPage.title
+            meta: mainPage.meta
+          }), {title: mainPage.title, meta: mainPage.meta}
 
         @staticDecorator.createPage
 
@@ -61,6 +64,13 @@ class ShopController
 
         async.apply async.parallel, {
           category: async.apply @storageDecorator.getCategory, category
+          breadcrumbs: async.apply async.waterfall, [
+            async.apply @storageDecorator.getBreadcrumbsForCategory, category
+            (crumbs, subTaskCallback)->
+              crumbs[crumbs.length - 1].url = false
+              subTaskCallback null, {crumbs}
+            @staticDecorator.getBreadcrumbs
+          ]
           products: async.apply @storageDecorator.getProductsByCategory, category, {
             skip
             limit
@@ -72,7 +82,7 @@ class ShopController
           paginationTemplate: async.apply @staticDecorator.readTemplate, "partials/pagination"
         }
 
-        ({category, products, categoryTemplate, categories, productTemplate, paginationTemplate}, taskCallback)=>
+        ({category, products, categoryTemplate, categories, productTemplate, paginationTemplate, breadcrumbs}, taskCallback)=>
 
           handlebars.registerPartial "product", productTemplate
           handlebars.registerPartial "pagination", paginationTemplate
@@ -99,9 +109,10 @@ class ShopController
             category
             products
             categories
+            breadcrumbs
             sort: @utilsDecorator.getSort()
             pagination: @utilsDecorator.createPagination page, pagesCount
-          })
+          }), {title: category?.title, meta: category?.meta}
         @staticDecorator.createPage
       ]
       @context.sendHtml
@@ -116,8 +127,14 @@ class ShopController
         async.apply async.parallel, {
           product: async.apply @storageDecorator.getProductByAlias, product
           productTemplate: async.apply @staticDecorator.createTemplate, "product"
+          breadcrumbs: async.apply async.waterfall, [
+            async.apply @storageDecorator.getBreadcrumbsForProduct, product
+            (crumbs, subTaskCallback)->
+              subTaskCallback null, {crumbs}
+            @staticDecorator.getBreadcrumbs
+          ]
         }
-        ({product, productTemplate}, taskCallback)=>
+        ({product, productTemplate, breadcrumbs}, taskCallback)=>
 
           unless product
             return @category()
@@ -140,7 +157,7 @@ class ShopController
             trimmedString = trimmedString.substr(0, Math.min(trimmedString.length, trimmedString.lastIndexOf(" ")))
             product.miniDesc = trimmedString + append
 
-          taskCallback null, productTemplate({product})
+          taskCallback null, productTemplate({product, breadcrumbs}), {title: product.title, meta: product.meta}
         @staticDecorator.createPage
       ]
       @context.sendHtml

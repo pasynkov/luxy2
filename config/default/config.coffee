@@ -6,7 +6,7 @@ config =
 
     redis:
       enable: true
-#      startupClean: true
+      startupClean: true
 
     mongo:
       name: "luxy"

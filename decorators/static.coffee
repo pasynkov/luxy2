@@ -60,8 +60,11 @@ class StaticDecorator
     @createTemplate "partials/toolbar", (err, template)->
       callback err, template?()
 
+  getBreadcrumbs: ([common]..., callback)=>
+    @createTemplate "partials/breadcrumbs", (err, template)->
+      callback err, template?(common)
 
-  createPage: (content, callback)=>
+  createPage: ([content, common]..., callback)=>
 
     async.waterfall(
       [
@@ -72,9 +75,14 @@ class StaticDecorator
             catalog_menu: @getCatalogMenu
             search: @getSearch
             toolbar: @getToolbar
+            breadcrumbs: async.apply @getBreadcrumbs, common
           }
         }
         ({layoutTemplate, commonData}, taskCallback)->
+
+          commonData ?= {}
+
+          commonData.common = common
 
           taskCallback null, layoutTemplate _.extend({content}, commonData)
 
