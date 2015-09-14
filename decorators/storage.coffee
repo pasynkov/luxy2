@@ -244,5 +244,37 @@ class StorageDecorator
       callback
     )
 
+  getCityByIP: (ip, callback)=>
+    ipA = ip.split "."
+    block = ((+ipA[0] * 256 * 256 * 256) + (+ipA[1] * 256 * 256) + (+ipA[2] * 256) + +ipA[3])
+    @mongo.collection("cities").findOne(
+      {
+        block:{$elemMatch:{begin_ip:{$lte:block},begin_end:{$gte:block}}}
+        status: "active"
+      }
+      callback
+    )
+
+  getCityByAlias: (alias, callback)=>
+
+    @redis.getex(
+      "#{vakoo.configurator.instanceName}-city-#{alias}"
+      async.apply async.waterfall, [
+        async.apply @mongo.collection("cities").findOne, {alias:alias, status:"active"}
+        (city, taskCallback)->
+          unless city
+            return taskCallback()
+          taskCallback null, {
+            alias: city.alias
+            title: city.name_ru
+            titles:
+              "in": city.title_in
+              from: city.title_from
+            region: city.region
+          }
+      ]
+      @redisTtl
+      callback
+    )
 
 module.exports = StorageDecorator

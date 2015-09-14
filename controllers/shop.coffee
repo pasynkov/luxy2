@@ -16,6 +16,7 @@ class ShopController
     @staticDecorator = new StaticDecorator @context
     @storageDecorator = new StorageDecorator
     @utilsDecorator = new UtilsDecorator @context
+    @contextDecorator = new ContextDecorator @context
 
     @logger = vakoo.logger.context
 
@@ -23,6 +24,7 @@ class ShopController
 
     async.waterfall(
       [
+        @contextDecorator.createCity
         async.apply async.parallel, {
           mainTemplate: async.apply @staticDecorator.createTemplate, "main_page"
           mainSliderData: @storageDecorator.mainSliderData
@@ -55,7 +57,7 @@ class ShopController
 
     async.waterfall(
       [
-
+        @contextDecorator.createCity
         async.apply @storageDecorator.getProductsCountByCategory, category
 
         (count, taskCallback)->
@@ -105,11 +107,14 @@ class ShopController
               return category
           )
 
+          category.description = handlebars.compile(category.description) {city: @context.city}
+
           taskCallback null, categoryTemplate({
             category
             products
             categories
             breadcrumbs
+            city: @context.city
             sort: @utilsDecorator.getSort()
             pagination: @utilsDecorator.createPagination page, pagesCount
           }), {title: category?.title, meta: category?.meta}
@@ -124,6 +129,7 @@ class ShopController
 
     async.waterfall(
       [
+        @contextDecorator.createCity
         async.apply async.parallel, {
           product: async.apply @storageDecorator.getProductByAlias, product
           productTemplate: async.apply @staticDecorator.createTemplate, "product"
@@ -157,7 +163,7 @@ class ShopController
             trimmedString = trimmedString.substr(0, Math.min(trimmedString.length, trimmedString.lastIndexOf(" ")))
             product.miniDesc = trimmedString + append
 
-          taskCallback null, productTemplate({product, breadcrumbs}), {title: product.title, meta: product.meta}
+          taskCallback null, productTemplate({product, breadcrumbs, city: @context.city}), {title: product.title, meta: product.meta}
         @staticDecorator.createPage
       ]
       @context.sendHtml

@@ -33,6 +33,12 @@ config =
     "routes"
   ]
 
+  city: {
+    redirect: off
+    defaultCity: "www"
+    chooseCookie: "choose"
+  }
+
 
 
 

@@ -33,8 +33,8 @@ class StaticDecorator
       callback err, unless err then Handlebars.compile(html)
 
   getFooter: (callback)=>
-    @createTemplate "partials/footer", (err, template)->
-      callback err, template?()
+    @createTemplate "partials/footer", (err, template)=>
+      callback err, template?({city: @context.city})
 
   getCatalogMenu: (callback)=>
 
@@ -44,24 +44,29 @@ class StaticDecorator
           template: async.apply @createTemplate, "partials/catalog_menu"
           tree: @storageDecorator.getCategoriesTree
         }
-        ({template, tree}, taskCallback)->
+        ({template, tree}, taskCallback)=>
 
-          taskCallback null, template({tree})
+          taskCallback null, template({tree, city: @context.city})
 
       ]
       callback
     )
 
   getSearch: (callback)=>
-    @createTemplate "partials/search", (err, template)->
-      callback err, template?()
+    @createTemplate "partials/search", (err, template)=>
+      callback err, template?({city: @context.city})
 
   getToolbar: (callback)=>
-    @createTemplate "partials/toolbar", (err, template)->
-      callback err, template?()
+    @createTemplate "partials/toolbar", (err, template)=>
+      callback err, template?({city: @context.city})
 
   getBreadcrumbs: ([common]..., callback)=>
-    @createTemplate "partials/breadcrumbs", (err, template)->
+
+    common ?= {}
+
+    common.city = @context.city
+
+    @createTemplate "partials/breadcrumbs", (err, template)=>
       callback err, template?(common)
 
   createPage: ([content, common]..., callback)=>
@@ -78,11 +83,12 @@ class StaticDecorator
             breadcrumbs: async.apply @getBreadcrumbs, common
           }
         }
-        ({layoutTemplate, commonData}, taskCallback)->
+        ({layoutTemplate, commonData}, taskCallback)=>
 
           commonData ?= {}
 
           commonData.common = common
+          commonData.city = @context.city
 
           taskCallback null, layoutTemplate _.extend({content}, commonData)
 
