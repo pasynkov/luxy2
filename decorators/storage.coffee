@@ -169,7 +169,9 @@ class StorageDecorator
     async.waterfall(
       [
         async.apply @getProductByAlias, productName
-        (product, taskCallback)=>
+        ([product]..., taskCallback)=>
+          unless product
+            return taskCallback "Product not found"
           @getBreadcrumbsForCategory product.category, (err, crumbs)=>
             if err
               return taskCallback err
