@@ -1,5 +1,16 @@
 config =
 
+  storage:
+
+    enable: true
+
+    redis:
+      enable: true
+
+    mongo:
+      name: "vakoo"
+      enable: true
+
   aggregator: {
     csv: "http://stripmag.ru/datafeed/p5s.csv"
     xml: "http://uslada-shop.ru/yml/offers.xml"
