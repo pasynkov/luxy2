@@ -273,7 +273,7 @@ class StorageDecorator
               "in": city.title_in
               from: city.title_from
             region: city.region
-            yandexUid: city.yandexUin
+            yandexUin: city.yandexUin
           }
       ]
       @redisTtl
