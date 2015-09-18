@@ -89,6 +89,7 @@ class StaticDecorator
 
           commonData.common = common
           commonData.city = @context.city
+          commonData.vakoo = vakoo
 
           taskCallback null, layoutTemplate _.extend({content}, commonData)
 

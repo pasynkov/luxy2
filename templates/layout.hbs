@@ -28,10 +28,7 @@
 
     <script src="/js/emerge.js"></script>
 
-
-    {{!
-    {{#production
-
+    {{#if vakoo.production}}
         <!-- Yandex.Metrika counter -->
         <script type="text/javascript">
             (function (d, w, c) {
@@ -71,9 +68,7 @@
             ga('send', 'pageview');
 
         </script>
-    {{/production
-
-    }}
+    {{/if}}
 </head>
 
 <!--Body-->
