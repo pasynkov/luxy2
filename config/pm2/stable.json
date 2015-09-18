@@ -1,5 +1,5 @@
 [{
-    "name": "luxy2_default",
+    "name": "luxy2",
     "script": "./node_modules/vakoo/index.coffee",
     "error_file": "./logs/err.log",
     "out_file": "./logs/out.log",
