@@ -1,11 +1,14 @@
+crypto = require "crypto"
+
 class Test
 
   constructor: (callback)->
 
+    console.log crypto.createHash("md5").update("21312623").digest("hex")
 
-    vakoo.mysql.collection("main_slider_settings").find {id: {$gt: 1}}, (err, rows)->
-      console.log "len", rows
-      callback()
+    callback()
+
+
 
 
 
