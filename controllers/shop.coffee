@@ -88,6 +88,9 @@ class ShopController
 
         ({category, products, categoryTemplate, categories, productTemplate, paginationTemplate, breadcrumbs}, taskCallback)=>
 
+          unless category
+            return taskCallback "Category not found"
+
           handlebars.registerPartial "product", productTemplate
           handlebars.registerPartial "pagination", paginationTemplate
 
