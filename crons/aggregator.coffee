@@ -598,6 +598,7 @@ class Aggregator
                 price: product.price
                 tradePrice: product.tradePrice
                 lastUpdate: new Date()
+                distributor_sku: +product.distributor.split(":")[1]
                 isNew: false
               }
               taskCallback
@@ -626,6 +627,7 @@ class Aggregator
     price: product.price
     tradePrice: product.tradePrice
     sku: product.sku
+    distributor_sku: +product.distributor.split(":")[1]
     desc: product.desc
     shortDesc: ""
     status: "active"
