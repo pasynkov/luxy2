@@ -23,7 +23,7 @@
     "pm2-stop": "pm2 stop luxy2 && pm2 delete luxy2 && pm2 stop luxy2_worker && pm2 delete luxy2_worker",
     "pm2-start": "pm2 start config/pm2/stable.json && pm2 start config/pm2/worker_stable.json",
     "pm2-restart": "npm run pm2-stop && npm run pm2-start",
-    "deploy": "pm2-stop && rm -rf node_modules && git pull && npm i && pm2-start"
+    "deploy": "npm run pm2-stop && rm -rf node_modules && git pull && npm i && npm run pm2-start"
   },
   "repository": {
     "type": "git",
