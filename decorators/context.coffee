@@ -118,8 +118,8 @@ class ContextDecorator
     hostname = @context.requester.hostname
 
     #todo kill that
-    hostname = "izhevsk.luxy.sexy"
-    @context.request.ip = "91.146.50.41"
+#    hostname = "izhevsk.luxy.sexy"
+#    @context.request.ip = "91.146.50.41"
 #    @context.request.ip = "127.0.0.1"
     #todo end
 

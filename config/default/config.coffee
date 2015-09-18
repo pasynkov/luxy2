@@ -34,9 +34,15 @@ config =
   ]
 
   city: {
-    redirect: off
+    redirect: false
     defaultCity: "www"
     chooseCookie: "choose"
+  }
+
+  shop: {
+    productsPerPage: 20
+    freeDelivery: 2900
+    deliveryCost: 290
   }
 
 

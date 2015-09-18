@@ -18,6 +18,8 @@ class ShopController
     @utilsDecorator = new UtilsDecorator @context
     @contextDecorator = new ContextDecorator @context
 
+    @shopConfig = vakoo.configurator.config.shop
+
     @logger = vakoo.logger.context
 
   index: ->
@@ -49,7 +51,7 @@ class ShopController
 
     category = @context.requester.path.split("/")[-1...][0]
 
-    limit = 20
+    limit = @shopConfig.productsPerPage
     skip = 0
     pagesCount = 0
     page = +(@context.request.query.p or 0)
@@ -149,9 +151,9 @@ class ShopController
           product.url = @utilsDecorator.createUrl product
           product.price = @utilsDecorator.numberFormat product.price, true
 
-          product.freeDelivery = product.price >= 4000
-          product.freeDeliverySum = 4000
-          product.delivery = 300
+          product.freeDelivery = product.price >= @shopConfig.freeDelivery
+          product.freeDeliverySum = @shopConfig.freeDelivery
+          product.delivery = @shopConfig.deliveryCost
 
           if product.params?.items
             product.params.items = @utilsDecorator.createParamsClasses product.params.items
