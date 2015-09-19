@@ -104,7 +104,7 @@ class Aggregator
 
         (taskCallback)=>
 
-          @redis.get(
+          @redis.getex(
             "productlist"
             (redisCallback)=>
 
@@ -128,11 +128,13 @@ class Aggregator
                 ]
                 redisCallback
               )
-
+            (60 * 30)
             taskCallback
           )
 
         (list, taskCallback)=>
+
+          @logger.info "XML received, start update `#{list.length}` objects"
 
           async.map(
             list
@@ -155,11 +157,10 @@ class Aggregator
                     done err
                 )
 
-            (err)->
-              taskCallback err
+            taskCallback
           )
 
-        (taskCallback)=>
+        (..., taskCallback)=>
 
           @logger.info "Products updated"
           taskCallback()
@@ -178,7 +179,7 @@ class Aggregator
       [
 
         (taskCallback)=>
-          @redis.get(
+          @redis.getex(
             "catlist"
             (redisCallback)=>
               async.waterfall(
@@ -207,6 +208,7 @@ class Aggregator
                 ]
                 redisCallback
               )
+            (60 * 30)
             taskCallback
           )
 
