@@ -18,11 +18,6 @@ config =
       time: "00 00 */4 * * *"
       script: "aggregator"
     }
-    {
-      name: "Image downloader"
-      time: "*/5 * * * * *"
-      script: "image-getter"
-    }
   ]
 
   initializers: false
