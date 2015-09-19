@@ -6,6 +6,9 @@ config =
     mysql:
       enable: false
     redis: {}
+    mongo:
+      name: "vakoo"
+      enable: true
 
 
   loggers:
