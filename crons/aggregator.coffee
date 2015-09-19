@@ -591,7 +591,7 @@ class Aggregator
         (mongoObj, taskCallback)=>
           if mongoObj
             @updated++
-            @mongo.collection(COL_PRODUCTS).update(
+            @mongo.collectionNative(COL_PRODUCTS).update(
               {_id: mongoObj._id}
               {$set:
                 available: product.available
@@ -605,7 +605,7 @@ class Aggregator
             )
           else
             @inserted++
-            @mongo.collection(COL_PRODUCTS).insert(
+            @mongo.collectionNative(COL_PRODUCTS).insert(
               @createObject(product)
               taskCallback
             )
