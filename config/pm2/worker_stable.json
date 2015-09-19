@@ -1,7 +1,15 @@
 [{
-    "name": "luxy2_worker",
+    "name": "luxy2_aggregator",
     "script": "./node_modules/vakoo/index.coffee",
-    "error_file": "./logs/worker_err.log",
-    "out_file": "./logs/worker_out.log",
-    "args": ["start", "-c", "worker", "-e", "stable"]
-}]
+    "error_file": "./logs/agg_worker_err.log",
+    "out_file": "./logs/agg_worker_out.log",
+    "args": ["start", "-c", "aggregator", "-e", "stable"]
+},
+{
+    "name": "luxy2_image_getter",
+    "script": "./node_modules/vakoo/index.coffee",
+    "error_file": "./logs/image_worker_err.log",
+    "out_file": "./logs/image_worker_out.log",
+    "args": ["start", "-c", "image_getter", "-e", "stable"]
+}
+]
