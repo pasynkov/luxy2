@@ -485,7 +485,8 @@ class Aggregator
                 product.sku = +raw["Артикул"]
                 product.title = raw["Наименование"]
                 product.desc = raw["Описание"]
-                product.distributor = raw["Производитель"] + ": " + raw["Артикул производителя"]
+                product.distributor = raw["Производитель"]
+                product.distributor_sku = raw["Артикул производителя"]
                 product.price = +raw["Цена (Розница)"]
                 product.tradePrice = +raw["Цена (Опт)"]
                 product.available = +raw["Можно купить"] is 1
@@ -598,7 +599,7 @@ class Aggregator
                 price: product.price
                 tradePrice: product.tradePrice
                 lastUpdate: new Date()
-                distributor_sku: +product.distributor.split(":")[1]
+                distributor_sku: product.distributor_sku
                 isNew: false
               }
               taskCallback
@@ -627,7 +628,7 @@ class Aggregator
     price: product.price
     tradePrice: product.tradePrice
     sku: product.sku
-    distributor_sku: +product.distributor.split(":")[1]
+    distributor_sku: product.distributor_sku
     desc: product.desc
     shortDesc: ""
     status: "active"
@@ -641,7 +642,7 @@ class Aggregator
       benefits: []
       items: _.filter(
         [
-          ["Брэнд", product.distributor.split(":")[0]]
+          ["Брэнд", product.distributor]
           ["Материал", product.material]
           ["Цвет", product.color]
           ["Размер", product.size]
