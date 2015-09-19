@@ -138,14 +138,14 @@ class Aggregator
             list
             (item, done)=>
 
-              @mongo.collection(COL_CATEGORIES).findOne {"import.id": item.cat_id}, (err, cat)=>
+              @mongo.collectionNative(COL_CATEGORIES).findOne {"import.id": item.cat_id}, (err, cat)=>
                 if err
                   return done err
 
                 unless cat
                   return done()
 
-                @mongo.collection(COL_PRODUCTS).update(
+                @mongo.collectionNative(COL_PRODUCTS).update(
                   {sku: item.sku}
                   $set:
                     price: item.price
@@ -322,12 +322,12 @@ class Aggregator
                 async.mapSeries(
                   catstree
                   (subcat, subDone)=>
-                    @mongo.collection(COL_CATEGORIES).findOne {_id: subcat}, (err, subCatObject)=>
+                    @mongo.collectionNative(COL_CATEGORIES).findOne {_id: subcat}, (err, subCatObject)=>
                       if err
                         return subDone err
                       if subCatObject
                         if _.indexOf(catstree, subcat) is (catstree.length - 1)
-                          @mongo.collection(COL_CATEGORIES).update {_id: subcat}, {$set: {title: cat.title, import: {id: cat.id}}}, (err)->
+                          @mongo.collectionNative(COL_CATEGORIES).update {_id: subcat}, {$set: {title: cat.title, import: {id: cat.id}}}, (err)->
                             subDone err
                         else
                           subDone()
@@ -337,14 +337,14 @@ class Aggregator
                         if _.indexOf(catstree, subcat) is (catstree.length - 1)
                           subCatObject.title = cat.title
                           subCatObject.import = {id: cat.id}
-                        @mongo.collection(COL_CATEGORIES).insert subCatObject, (err)->
+                        @mongo.collectionNative(COL_CATEGORIES).insert subCatObject, (err)->
                           subDone err
                   (err)=>
                     done err
                 )
 
               else
-                @mongo.collection(COL_CATEGORIES).update(
+                @mongo.collectionNative(COL_CATEGORIES).update(
                   {_id: cat.href}
                   {$set: {import: {id: cat.id}}}
                   done
@@ -367,7 +367,7 @@ class Aggregator
                 async.map(
                   catstree
                   (subcat, subDone)=>
-                    @mongo.collection(COL_CATEGORIES).findOne {_id: subcat}, subDone
+                    @mongo.collectionNative(COL_CATEGORIES).findOne {_id: subcat}, subDone
                   (err, catlist)=>
                     catlist = _.map catlist, (c)-> _.pick(c, ["_id", "title", "parent", "ancestors"])
 
@@ -380,7 +380,7 @@ class Aggregator
                     async.map(
                       catlist
                       (catFromList, subsubDone)=>
-                        @mongo.collection(COL_CATEGORIES).update {_id: catFromList._id}, {$set: catFromList}, subsubDone
+                        @mongo.collectionNative(COL_CATEGORIES).update {_id: catFromList._id}, {$set: catFromList}, subsubDone
                       done
                     )
 
@@ -583,7 +583,7 @@ class Aggregator
           )
         (..., taskCallback)=>
 
-          @mongo.collection(COL_PRODUCTS).findOne(
+          @mongo.collectionNative(COL_PRODUCTS).findOne(
             {sku: product.sku}
             taskCallback
           )
