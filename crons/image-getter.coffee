@@ -37,7 +37,8 @@ class ImageGetter
       ]
       (err)=>
         if err
-          @logger.error "Complete with err: `#{err}`"
+          if err isnt "Not images in queue"
+            @logger.warn "Complete with err: `#{err}`"
         callback()
     )
 
