@@ -2,6 +2,9 @@ config =
 
   storage:
 
+    redis:
+      enable: true
+
     mongo:
       name: "luxy"
       enable: true

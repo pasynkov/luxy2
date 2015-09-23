@@ -5,6 +5,9 @@ config =
       name: "vakoo"
       enable: true
 
+    redis:
+      enable: true
+
   initializers: false
 
   city: {

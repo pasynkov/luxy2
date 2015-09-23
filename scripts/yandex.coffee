@@ -20,7 +20,6 @@ class Yandex
               host.verification[0].$.state is "VERIFIED"
           )
 
-
           async.map(
             hosts
             (host, done)=>
@@ -40,7 +39,35 @@ class Yandex
             uins
             ([siteId, uin], done)->
 
-              vakoo.mongo.collectionNative("cities").update {yandexId: siteId}, {$set: {yandexUin: uin}}, done
+              vakoo.mongo.collectionNative("cities").update {yandexId: siteId}, {$set: {yandexUin: uin}}, (err)->
+                done err, siteId
+
+            taskCallback
+          )
+
+        (siteIds, taskCallback)->
+
+          vakoo.redis.client.keys "*city*", (err, keys)->
+
+            if err
+              return taskCallback err
+
+            unless keys.length
+              return taskCallback null, siteIds
+
+            vakoo.redis.client.del keys, (err)->
+
+              if err
+                return taskCallback err
+
+              taskCallback null, siteIds
+
+        (siteIds, taskCallback)=>
+          async.map(
+            siteIds
+            (siteId, done)=>
+              @yaRequest "put", "hosts/#{siteId}/verify", {host: {type: "META_TAG"}}, (err, response)->
+                done err
 
             taskCallback
           )
