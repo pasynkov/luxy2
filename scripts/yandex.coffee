@@ -1,4 +1,5 @@
-{parseString} = require "xml2js"
+xml2js = require "xml2js"
+parseString = xml2js.parseString
 request = require "request"
 async = require "async"
 _ = require "underscore"
@@ -19,6 +20,9 @@ class Yandex
             (host)->
               host.verification[0].$.state is "VERIFIED"
           )
+
+          unless hosts.length
+            taskCallback "Not found unverified sites"
 
           async.map(
             hosts
@@ -66,7 +70,7 @@ class Yandex
           async.map(
             siteIds
             (siteId, done)=>
-              @yaRequest "put", "hosts/#{siteId}/verify", {host: {type: "META_TAG"}}, (err, response)->
+              @yaRequest "put", "hosts/#{siteId}/verify", {host:{type: "META_TAG"}}, (err, response)->
                 done err
 
             taskCallback
@@ -88,18 +92,23 @@ class Yandex
 
   yaRequest: ([method, url, postData]..., callback)=>
 
-    postData ?= {}
-
     async.waterfall(
       [
-        (taskCallback)=>
+        (taskCallback)->
+          if postData
+            builder = new xml2js.Builder headless: true
+            xml = builder.buildObject postData
+            taskCallback null, xml
+          else
+            taskCallback()
+        ([body]...,taskCallback)=>
           request[method](
-            "http://webmaster.yandex.ru/api/v2/#{url}"
+            "https://webmaster.yandex.ru/api/v2/#{url}"
             {
               headers: {
                 Authorization: "OAuth #{@cityConfig.yaToken}"
               }
-              form: postData
+              body
             }
             taskCallback
           )
