@@ -8,6 +8,8 @@ class Yandex
 
   constructor: (callback)->
 
+    @logger = vakoo.logger.yandex
+
     @cityConfig = vakoo.configurator.config.city
 
     async.waterfall(
@@ -24,6 +26,8 @@ class Yandex
           unless hosts.length
             taskCallback "Not found unverified sites"
 
+          @logger.info "Finded `#{hosts.length}` unverified hosts"
+
           async.map(
             hosts
             (host, done)=>
@@ -38,6 +42,8 @@ class Yandex
             taskCallback
           )
         (uins, taskCallback)=>
+
+          @logger.info "received `#{uins.length}` successfully, run update cities"
 
           async.map(
             uins
@@ -67,6 +73,9 @@ class Yandex
               taskCallback null, siteIds
 
         (siteIds, taskCallback)=>
+
+          @logger.info "cache cleaned successfully, run verify"
+
           async.map(
             siteIds
             (siteId, done)=>

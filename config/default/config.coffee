@@ -27,6 +27,7 @@ config =
   loggers:
     routesInitializer: {}
     cacheInitializer: {}
+    yandex: {}
 
   initializers: [
     "cache"
