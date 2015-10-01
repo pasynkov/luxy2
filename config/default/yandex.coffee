@@ -1,5 +1,8 @@
 config =
 
+  loggers:
+    yandex: {}
+
   storage:
 
     redis:
