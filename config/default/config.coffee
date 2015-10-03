@@ -21,7 +21,7 @@ config =
   web:
     enable: true
     static: "static"
-#    cacheStatic: true
+    cacheStatic: true
     port: 8090
 
   loggers:
