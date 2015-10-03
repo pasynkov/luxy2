@@ -254,6 +254,7 @@ class ShopController
             @context.response.redirect = @utilsDecorator.createUrl product2
           else
             @context.response.redirect = "/archive" + @utilsDecorator.createUrl product2
+          @context.response.redirect = @context.response.redirect.replace('//','/')
           @context.sendHtml()
         else
           return @context.sendHtml "Nothing"
