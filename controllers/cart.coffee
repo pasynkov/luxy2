@@ -209,6 +209,8 @@ class ShopController
 
             order._id = r?.ops[0]?._id
 
+            vakoo.redis.publish "luxy_order", "New order.\n ID is `#{order._id}`"
+
             taskCallback(
               err
               template({
