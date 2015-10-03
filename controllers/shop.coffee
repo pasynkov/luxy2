@@ -233,13 +233,23 @@ class ShopController
   redirector: ->
     _id = @context.request.query.id or @context.request.query.product
 
-    vakoo.mongo.collection("product").findOne {_id}, (err, product)=>
+    async.parallel [
+      async.apply vakoo.mongo.collection("products").findOne, {_id}
+      async.apply vakoo.mongo.collection("products2").findOne, {_id}
+      async.apply vakoo.mongo.collection("products2_").findOne, {_id}
+    ], (err, ps)=>
       if err
         return @context.sendHtml err
-      else if product
-        @context.response.redirect @utilsDecorator.createUrl product
-      else
-        return @context.sendHtml "Nothing"
+
+      product = _.flatten(ps)[0]
+
+      vakoo.mongo.collection("products").findOne {alias: product.alias}, (err, product2)=>
+        if err
+          return @context.sendHtml err
+        else if product2
+          @context.response.redirect @utilsDecorator.createUrl product2
+        else
+          return @context.sendHtml "Nothing"
 
 
 module.exports = ShopController
