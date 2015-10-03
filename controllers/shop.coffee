@@ -247,7 +247,10 @@ class ShopController
         if err
           return @context.sendHtml err
         else if product2
-          @context.response.redirect = "/archive" + @utilsDecorator.createUrl product2
+          if product2.ancestors.length
+            @context.response.redirect = @utilsDecorator.createUrl product2
+          else
+            @context.response.redirect = "/archive" + @utilsDecorator.createUrl product2
           @context.sendHtml()
         else
           return @context.sendHtml "Nothing"
