@@ -230,5 +230,16 @@ class ShopController
       @context.sendHtml
     )
 
+  redirector: ->
+    _id = @context.request.query.id or @context.request.query.product
+
+    vakoo.mongo.collection("product").findOne {_id}, (err, product)=>
+      if err
+        return @context.sendHtml err
+      else if product
+        @context.response.redirect @utilsDecorator.createUrl product
+      else
+        return @context.sendHtml "Nothing"
+
 
 module.exports = ShopController

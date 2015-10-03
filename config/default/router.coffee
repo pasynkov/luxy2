@@ -11,5 +11,8 @@ class Router
     @webServer.addRoute "post", "/checkout", "cart", "checkout"
     @webServer.addRoute "post", "/order", "cart", "order"
 
+    @webServer.addRoute "get", "/checkout", "shop", "redirector"
+    @webServer.addRoute "get", "/shop/products/index", "shop", "redirector"
+
 
 module.exports = Router
