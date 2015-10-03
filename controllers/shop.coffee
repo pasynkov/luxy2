@@ -241,7 +241,7 @@ class ShopController
       if err
         return @context.sendHtml err
 
-      product = _.flatten(ps)[0]
+      product = _.compact(ps)[0]
 
       vakoo.mongo.collection("products").findOne {alias: product.alias}, (err, product2)=>
         if err
