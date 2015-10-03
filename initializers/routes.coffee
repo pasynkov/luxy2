@@ -14,6 +14,23 @@ class RoutesInitializer
 
     @logger.info "Start create routes"
 
+    async.parallel(
+      [
+        @createShopRoutes
+        @createPagesRoutes
+      ]
+      (err, routes)=>
+
+        if err
+          @logger.error "Creating routes crash with err: `#{err}`"
+        else
+          @logger.info "Routes successfully created"
+
+        callback()
+    )
+
+  createShopRoutes: (callback)=>
+
     async.waterfall(
       [
         @storageDecorator.getCategoriesList
@@ -27,18 +44,22 @@ class RoutesInitializer
             vakoo.web.server.addRoute "get", @utilsDecorator.createUrl(category) + "/:product_alias","shop", "product"
 
           taskCallback null, categories
-
       ]
-      (err, routes)=>
-
-        if err
-
-          @logger.error "Creating routes crash with err: `#{err}`"
-
-        else
-          @logger.info "Successfully create `#{routes.length}` routes"
-
-        callback()
+      callback
     )
+
+  createPagesRoutes: (callback)=>
+
+    async.waterfall(
+      [
+        @storageDecorator.getPageList
+        (pages, taskCallback)=>
+          for page in pages
+            vakoo.web.server.addRoute "get", "/" + page.alias, "shop", "page"
+          taskCallback()
+      ]
+      callback
+    )
+
 
 module.exports = RoutesInitializer

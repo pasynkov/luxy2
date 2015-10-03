@@ -57,8 +57,8 @@ font-weight: 200;">Y</span></span></h1>
                             <a class="incr-btn" href="#">+</a>
                         </div>
 
-                        <a class="btn btn-primary btn-sm add-cart-btn" data-id="{{product._id}}" data-value-selector="#quantity" id="addItemToCart" href="#"><i class="icon-shopping-cart"></i>В корзину</a>
-                        <a class="btn btn-success btn-sm one-click" href="/checkout?product={{product._id}}" data-id="{{product._id}}"><i class="fa fa-send-o"></i>Купить в 1 клик</a>
+                        <a class="btn btn-primary btn-sm add-cart-btn" data-id="{{product._id}}" data-alias="{{product.alias}}" data-value-selector="#quantity" id="addItemToCart" href="#"><i class="icon-shopping-cart"></i>В корзину</a>
+                        <a class="btn btn-success btn-sm one-click" href="#" data-id="{{product._id}}" data-alias="{{product.alias}}" onclick="cart.oneClick(event)"><i class="fa fa-send-o"></i>Купить в 1 клик</a>
                     </div>
 
                 {{else}}

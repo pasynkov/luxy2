@@ -45,6 +45,23 @@ class StorageDecorator
       callback
     )
 
+  getPageList: (callback)=>
+
+    @redis.getex(
+      "#{vakoo.instanceName}-page-list"
+      async.apply(
+        @mongo.collection("pages").find
+        {
+          $query: {alias: {$nin: ["main", "contacts"]}, status: "active", type: "article"}
+          $orderby: {label: 1}
+        }
+        {alias: 1, title: 1, label: 1}
+      )
+      @redisTtl
+      callback
+    )
+
+
   getMainSliderCategories: (callback)=>
 
     @redis.getex(
@@ -243,6 +260,13 @@ class StorageDecorator
       "#{vakoo.configurator.instanceName}-product-#{product}"
       async.apply @mongo.collection(COL_PRODUCTS).findOne, {alias: product}
       @redisTtl
+      callback
+    )
+
+  getProductsByAlias: (aliases, callback)=>
+    async.map(
+      aliases
+      @getProductByAlias
       callback
     )
 

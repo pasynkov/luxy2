@@ -104,53 +104,53 @@ $(document).ready(function(e) {
 	/*Shopping Cart Dropdown 
 	*******************************************/
 	//Deleting Items
-	$(document).on('click', '.cart-dropdown .delete', function(){
-
-		var $target = $(this).parent().parent();
-
-		$.post('/shop/cart/add',{id:$(this).data('id'),value:'0'}).success(function(cart){
-			$target.hide(300,function(){
-				$.when($target.remove()).then(function(){
-					updateCart(cart);
-				});
-			});
-		});
-	});
+//	$(document).on('click', '.cart-dropdown .delete', function(){
+//
+//		var $target = $(this).parent().parent();
+//
+//		$.post('/shop/cart/add',{id:$(this).data('id'),value:'0'}).success(function(cart){
+//			$target.hide(300,function(){
+//				$.when($target.remove()).then(function(){
+//					updateCart(cart);
+//				});
+//			});
+//		});
+//	});
 	
 	//update items
 	
-	$(document).on('change','.cart-dropdown input, .shopping-cart .items-list .item input',function(){
-		var $target = $(this),
-			value = $target.val()*1,
-			id = $target.data('id');
-		
-		if(value <= 0 || isNaN(value)){
-			$target.val(1);
-			value = 1;
-		}
-
-		$.post('/shop/cart/add',{id:id,value:value}).success(function(cart){
-			updateCart(cart);
-		});
-
-	});
+//	$(document).on('change','.cart-dropdown input, .shopping-cart .items-list .item input',function(){
+//		var $target = $(this),
+//			value = $target.val()*1,
+//			id = $target.data('id');
+//
+//		if(value <= 0 || isNaN(value)){
+//			$target.val(1);
+//			value = 1;
+//		}
+//
+//		$.post('/shop/cart/add',{id:id,value:value}).success(function(cart){
+//			updateCart(cart);
+//		});
+//
+//	});
 	
 	/*Shopping Cart Page
 	*******************************************/
 	//Deleting Items
-	$(document).on('click', '.shopping-cart .delete i', function(){
-		var $target = $(this).parent().parent();
-		var $positions = $('.shopping-cart .item');
-
-
-		$.post('/shop/cart/add',{id:$(this).data('id'),value:'0'}).success(function(cart){
-			$target.hide(300,function(){
-				$.when($target.remove()).then(function(){
-					updateCart(cart);
-				});
-			});
-		});
-	});
+//	$(document).on('click', '.shopping-cart .delete i', function(){
+//		var $target = $(this).parent().parent();
+//		var $positions = $('.shopping-cart .item');
+//
+//
+//		$.post('/shop/cart/add',{id:$(this).data('id'),value:'0'}).success(function(cart){
+//			$target.hide(300,function(){
+//				$.when($target.remove()).then(function(){
+//					updateCart(cart);
+//				});
+//			});
+//		});
+//	});
 	
 	/*Wishlist Deleting Items
 	*******************************************/
@@ -488,46 +488,42 @@ $(document).ready(function(e) {
 	}
 	
 	//Add(+/-) Button Number Incrementers
-	$(".incr-btn").on("click", function(e) {
-		var $button = $(this),
-			id = $button.data('id');
-		var oldValue = $button.parent().find("input").val();
-		if ($button.text() == "+") {
-			var newVal = parseFloat(oldValue) + 1;
-		} else {
-		 // Don't allow decrementing below 1
-			if (oldValue > 1) {
-				var newVal = parseFloat(oldValue) - 1;
-			} else {
-				newVal = 1;
-			}
-		}
-
-		if(id){
-			$.post('/shop/cart/add',{id:id,value:newVal}).success(function(cart){
-				updateCart(cart);
-			});
-		}else{
-			$button.parent().find('input').val(newVal);
-			var $a = $button.parent().parent().find('.one-click');
-
-			if($a){
-				$a.attr('href','/checkout?product=' + $a.data('id') + '&count=' + newVal);
-			}
-		}
-
-
-
-
-
-		e.preventDefault();
-	});
+//	$(".incr-btn").on("click", function(e) {
+//		var $button = $(this),
+//			id = $button.data('id');
+//		var oldValue = $button.parent().find("input").val();
+//		if ($button.text() == "+") {
+//			var newVal = parseFloat(oldValue) + 1;
+//		} else {
+//		 // Don't allow decrementing below 1
+//			if (oldValue > 1) {
+//				var newVal = parseFloat(oldValue) - 1;
+//			} else {
+//				newVal = 1;
+//			}
+//		}
+//
+//		if(id){
+//            cart.changeCountById(id, newVal)
+//		}else{
+//			$button.parent().find('input').val(newVal);
+//			var $a = $button.parent().parent().find('.one-click');
+//
+//			if($a){
+//                $a.data('count', newVal);
+//			}
+//		}
+//
+//		e.preventDefault();
+//	});
 
 	$("#quantity").blur(function(){
 		var value = $(this).val() * 1;
 		if(value <= 0 || isNaN(value)){
 			value = 1;
 		}
+
+        $(this).closest(".buttons.group").find(".one-click").data("count", value);
 
 		$(this).val(value);
 	});
@@ -537,16 +533,11 @@ $(document).ready(function(e) {
 	$addToCartBtn.click(function(){
 		$addedToCartMessage.removeClass('visible');
 		var $itemName = $(this).parent().parent().find('h1').text();
-//		var $itemPrice = $(this).parent().parent().find('.price').text();
-//		var $itemQnty = $(this).parent().find('#quantity').val();
-//		var $cartTotalItems = parseInt($('.cart-btn a span').text()) +1;
+		var $itemPrice = $(this).parent().parent().find('.price').text();
+		var $itemQnty = $(this).parent().find('#quantity').val();
+		var $cartTotalItems = parseInt($('.cart-btn a span').text()) +1;
 		$addedToCartMessage.find('p').text('"' + $itemName + '"' + '  ' + 'добавлен в вашу корзину.');
-//		$('.cart-dropdown table').append(
-//			'<tr class="item"><td><div class="delete"></div><a href="#">' + $itemName +
-//			'<td><input type="text" value="' + $itemQnty +
-//			'"></td><td class="price">' + $itemPrice + '</td>'
-//		);
-//		$('.cart-btn a span').text($cartTotalItems);
+		$('.cart-btn a span').text($cartTotalItems);
 		$addedToCartMessage.addClass('visible');
 	});
 	

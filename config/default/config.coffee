@@ -21,7 +21,7 @@ config =
   web:
     enable: true
     static: "static"
-    cacheStatic: true
+#    cacheStatic: true
     port: 8090
 
   loggers:
@@ -44,6 +44,7 @@ config =
     productsPerPage: 20
     freeDelivery: 2900
     deliveryCost: 290
+    minCart: 1000
   }
 
 

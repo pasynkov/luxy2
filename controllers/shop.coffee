@@ -47,6 +47,44 @@ class ShopController
       @context.sendHtml
     )
 
+  page: ->
+
+
+    page = @context.requester.path.split("/")[-1...][0]
+
+    async.waterfall(
+      [
+        @contextDecorator.createCity
+        async.apply async.parallel, {
+          template: async.apply @staticDecorator.createTemplate, "page"
+          page: async.apply @storageDecorator.getPage, page
+          related: @storageDecorator.getPageList
+          breadcrumbs: async.apply async.waterfall, [
+            async.apply @storageDecorator.getPage, page
+            (page, miniTaskCallback)->
+              miniTaskCallback null, crumbs: [
+                {title: "Главная", url: "/"}
+                {title: page.title}
+              ]
+            @staticDecorator.getBreadcrumbs
+          ]
+        }
+
+        ({template, page, related, breadcrumbs}, taskCallback)=>
+
+          page.content = handlebars.compile(page.content) {city: @context.city}
+
+          taskCallback null, template({
+            page
+            related
+            breadcrumbs
+          }), {title: page.title, meta: page.meta}
+
+        @staticDecorator.createPage
+      ]
+      @context.sendHtml
+    )
+
   category: ->
 
     category = @context.requester.path.split("/")[-1...][0]
@@ -127,6 +165,24 @@ class ShopController
       ]
       @context.sendHtml
     )
+
+  minifyProduct: ->
+
+    @storageDecorator.getProductByAlias @context.request.query.id, (err, product)=>
+      if err
+        return @context.sendHtml err
+
+      unless product
+        return @context.sendHtml "Not found product"
+
+      @context.responser.send {
+        _id: product._id
+        title: product.title
+        alias: @context.request.query.id
+        url: @utilsDecorator.createUrl product
+        price: product.price
+      }
+
 
   product: ->
 

@@ -6,13 +6,13 @@ class UtilsDecorator
   constructor: (@context)->
 
 
-  numberFormat: (number, price)->
+  numberFormat: (number)->
 
-    if price
-      if +number < 500
-        number = +((number / 10) * 10)
-      else
-        number = +((number / 100) * 100)
+#    if price
+#      if +number < 500
+#        number = +((number / 10) * 10)
+#      else
+#        number = +((number / 100) * 100)
 
     decimals = 0
     dec_point = '.'

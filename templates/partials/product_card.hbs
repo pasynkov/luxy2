@@ -29,7 +29,7 @@
                 </div>
 
                 <!--Add To Cart Button-->
-                <a class="add-cart-btn" href="#" data-id="{{_id}}"><span>В корзину</span><i class="icon-shopping-cart"></i></a>
+                <a class="add-cart-btn" href="#" data-id="{{_id}}" data-alias="{{alias}}"><span>В корзину</span><i class="icon-shopping-cart"></i></a>
                 <!--Share Button-->
                 <div class="share-btn">
                     <div class="hover-state">
@@ -41,7 +41,7 @@
                 </div>
 
                 <!--Add To Wishlist Button-->
-                <a class="wishlist-btn" href="/checkout?product={{_id}}">
+                <a class="wishlist-btn" href="#" onclick="cart.oneClick(event)" data-alias="{{alias}}">
                     <div class="hover-state">Купить</div>
                     <i class="fa fa-send-o"></i>
                 </a>
