@@ -13,6 +13,7 @@ class Router
 
     @webServer.addRoute "get", "/checkout", "shop", "redirector"
     @webServer.addRoute "get", "/shop/products/index", "shop", "redirector"
+    @webServer.addRoute "get", "/archive/:product_id", "shop", "product"
 
 
 module.exports = Router
