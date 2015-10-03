@@ -261,7 +261,7 @@ class StorageDecorator
       callback
     )
 
-  getProductsCountByCategory: ([categoryName, onlyAvailable], callback)=>
+  getProductsCountByCategory: ([categoryName, onlyAvailable]..., callback)=>
 
     onlyAvailable ?= false
 
@@ -269,7 +269,6 @@ class StorageDecorator
       available = true
     else
       available = {$ne: null}
-
     @redis.getex(
       "#{vakoo.configurator.instanceName}-products-count-of-#{categoryName}-#{if onlyAvailable then "1" else "0"}"
       async.apply @mongo.collection(COL_PRODUCTS).count, {ancestors: categoryName, available}
