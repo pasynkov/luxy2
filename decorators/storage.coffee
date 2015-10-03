@@ -83,10 +83,24 @@ class StorageDecorator
     )
 
   getCategoriesList: (callback)=>
-
     @redis.getex(
       "#{vakoo.configurator.instanceName}-categories-list"
-      async.apply @mongo.collection(COL_CATEGORIES).find
+      (redisCallback)=>
+        async.waterfall(
+          [
+            @mongo.collection(COL_CATEGORIES).find
+            (categories, taskCallback)=>
+              async.map(
+                categories
+                (category, done)=>
+                  @getProductsCountByCategory category._id, (err, count)->
+                    category.count = count
+                    done err, category
+                taskCallback
+              )
+          ]
+          redisCallback
+        )
       @redisTtl
       callback
     )
@@ -112,6 +126,8 @@ class StorageDecorator
                   return category
               )
 
+              categories = _.filter categories, (c)-> c.count
+
               parents = _.indexBy _.filter(
                 categories
                 (category)->
@@ -121,13 +137,22 @@ class StorageDecorator
               grouped = _.groupBy(
                 categories
                 (category)->
-                  return category.ancestors[0]
+                  return category.parent
               )
 
               tree = _.mapObject(
                 parents
                 (category)->
-                  category.childs = grouped[category._id] or []
+                  category.childs = _.map(
+                    grouped[category._id] or []
+                    (ca)->
+                      ca.childs = grouped[ca._id]
+                      return ca
+                  )
+
+                  unless category.childs.length
+                    category.childs = false
+
                   return category
               )
 

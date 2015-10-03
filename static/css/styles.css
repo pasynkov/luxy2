@@ -12773,7 +12773,8 @@ header .search-form .close-search:hover {
 	background: #fff;
 	-webkit-border-radius: 0 0 5px 5px;
 	-moz-border-radius: 0 0 5px 5px;
-	border-radius: 0 0 5px 5px
+	border-radius: 0 0 5px 5px;
+    height: 143px;
 }
 
 .catalog-grid .tile .footer a {
@@ -13004,7 +13005,7 @@ header .search-form .close-search:hover {
 
 .catalog-grid .tile .footer>a{
 	display:block;
-	max-height: 24px;
+	max-height: 48px;
 	overflow:hidden;
 }
 
