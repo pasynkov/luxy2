@@ -93,7 +93,7 @@ class StorageDecorator
               async.map(
                 categories
                 (category, done)=>
-                  @getProductsCountByCategory category._id, (err, count)->
+                  @getProductsCountByCategory category._id, yes, (err, count)->
                     category.count = count
                     done err, category
                 taskCallback
@@ -261,11 +261,18 @@ class StorageDecorator
       callback
     )
 
-  getProductsCountByCategory: (categoryName, callback)=>
+  getProductsCountByCategory: ([categoryName, onlyAvailable], callback)=>
+
+    onlyAvailable ?= false
+
+    if onlyAvailable
+      available = true
+    else
+      available = {$ne: null}
 
     @redis.getex(
-      "#{vakoo.configurator.instanceName}-products-count-of-#{categoryName}"
-      async.apply @mongo.collection(COL_PRODUCTS).count, {ancestors: categoryName}
+      "#{vakoo.configurator.instanceName}-products-count-of-#{categoryName}-#{if onlyAvailable then "1" else "0"}"
+      async.apply @mongo.collection(COL_PRODUCTS).count, {ancestors: categoryName, available}
       @redisTtl
       callback
     )
