@@ -100,6 +100,8 @@ class Cart
       @storage.items[index].count = count
       @storage.items[index].total = @storage.items[index].count * @storage.items[index].price
 
+    @goal "cart.count"
+
     @saveCart()
 
   add: (product)=>
@@ -107,10 +109,16 @@ class Cart
     if (index = @getIndexById(product._id)) >= 0
       @storage.items[index].count += product.count
       @storage.items[index].total = @storage.items[index].count * @storage.items[index].price
+      @goal "cart.plus"
     else
       @storage.items.push product
+      @goal "cart.push"
 
     @saveCart()
+
+  goal: (target)->
+    if yaCounter26169195?
+      yaCounter26169195.reachGoal target
 
   removeById: (id)=>
 
@@ -118,6 +126,7 @@ class Cart
 
     if index >= 0
       @storage.items.splice index, 1
+      @goal "cart.pull"
 
     @saveCart()
 
@@ -184,6 +193,7 @@ class Cart
       else
 
         @add product
+        @goal "oneclick"
 
         content = """
             Чтобы купить в один клик сумма товара должна быть больше
@@ -214,8 +224,10 @@ class Cart
         4
       )
 
-    else
+      @goal "order.checkout.fail"
 
+    else
+      @goal "order.checkout.success"
       $form = $("<form></form>", {
         method: "post"
         action: "/checkout"
@@ -238,7 +250,9 @@ class Cart
       (timeout * 1000)
     )
 
-  show: ->
+  show: =>
+
+    @goal "order.cart"
 
     $form = $("<form></form>", {
       method: "post"
@@ -253,7 +267,7 @@ class Cart
 
     @storage = {count: 0, total: 0, items: []}
     @saveCart()
-
+    @goal "order.thanks"
     localStorage["lastOrder"] = JSON.stringify order
 
   html: =>

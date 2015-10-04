@@ -6,6 +6,7 @@ var Cart,
 Cart = (function() {
   function Cart() {
     this.html = bind(this.html, this);
+    this.show = bind(this.show, this);
     this.checkout = bind(this.checkout, this);
     this.oneClick = bind(this.oneClick, this);
     this.saveCart = bind(this.saveCart, this);
@@ -112,6 +113,7 @@ Cart = (function() {
       this.storage.items[index].count = count;
       this.storage.items[index].total = this.storage.items[index].count * this.storage.items[index].price;
     }
+    this.goal("cart.count");
     return this.saveCart();
   };
 
@@ -120,10 +122,18 @@ Cart = (function() {
     if ((index = this.getIndexById(product._id)) >= 0) {
       this.storage.items[index].count += product.count;
       this.storage.items[index].total = this.storage.items[index].count * this.storage.items[index].price;
+      this.goal("cart.plus");
     } else {
       this.storage.items.push(product);
+      this.goal("cart.push");
     }
     return this.saveCart();
+  };
+
+  Cart.prototype.goal = function(target) {
+    if (typeof yaCounter26169195 !== "undefined" && yaCounter26169195 !== null) {
+      return yaCounter26169195.reachGoal(target);
+    }
   };
 
   Cart.prototype.removeById = function(id) {
@@ -131,6 +141,7 @@ Cart = (function() {
     index = this.getIndexById(id);
     if (index >= 0) {
       this.storage.items.splice(index, 1);
+      this.goal("cart.pull");
     }
     this.saveCart();
     $shoppingCart = $(".shopping-cart");
@@ -207,6 +218,7 @@ Cart = (function() {
           return _this.checkout(e);
         } else {
           _this.add(product);
+          _this.goal("oneclick");
           content = "Чтобы купить в один клик сумма товара должна быть больше\n<b>" + _this.config.minCart + "</b> <span class=\"fa fa-rouble\"/>.<br/>\nМы добавили этот товар в вашу корзину";
           return _this.popover(el, content, null);
         }
@@ -223,8 +235,10 @@ Cart = (function() {
       total -= this.storage.delivery;
     }
     if (total < this.config.minCart) {
-      return this.popover(el, "К сожалению, общая сумма заказа должна привышать\n<b>" + this.config.minCart + "</b> <span class=\"fa fa-rouble\"/>.\nОсталось <b>" + (this.config.minCart - total) + "</b> <span class=\"fa fa-rouble\"/>.", $(el).attr("name") === "to-checkout" ? null : $(".cart-dropdown"), 4);
+      this.popover(el, "К сожалению, общая сумма заказа должна привышать\n<b>" + this.config.minCart + "</b> <span class=\"fa fa-rouble\"/>.\nОсталось <b>" + (this.config.minCart - total) + "</b> <span class=\"fa fa-rouble\"/>.", $(el).attr("name") === "to-checkout" ? null : $(".cart-dropdown"), 4);
+      return this.goal("order.checkout.fail");
     } else {
+      this.goal("order.checkout.success");
       return $form = $("<form></form>", {
         method: "post",
         action: "/checkout"
@@ -255,6 +269,7 @@ Cart = (function() {
 
   Cart.prototype.show = function() {
     var $form;
+    this.goal("order.cart");
     return $form = $("<form></form>", {
       method: "post",
       action: "/cart"
@@ -275,6 +290,7 @@ Cart = (function() {
       items: []
     };
     this.saveCart();
+    this.goal("order.thanks");
     return localStorage["lastOrder"] = JSON.stringify(order);
   };
 
