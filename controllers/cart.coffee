@@ -34,8 +34,8 @@ class ShopController
     act = @context.request.query.act
 
     if act is "result"
-
-      if @robo.checkPayment @context.request.body
+      console.log @context.request.body
+      if @robo.checkPayment(@context.request.body)
         @logger.info "Successfully payment order `#{@context.request.body.InvId}`"
         vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result: 1}}, @context.sendHtml
       else
