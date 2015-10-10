@@ -22,7 +22,7 @@ config =
     enable: true
     static: "static"
     cacheStatic: true
-    port: 8090
+    port: 8800
 
   loggers:
     routesInitializer: {}

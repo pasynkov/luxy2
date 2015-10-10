@@ -13,9 +13,27 @@
                 <h1 class="title">Спасибо за покупку!</h1>
                 <div class="row space-top">
                     <div class="clo-lg-12 col-md-12 col-sm-12 space-bottom">
+
+                        {{#if message}}
+
+                            <h4>{{{message}}}</h4>
+
+                        {{else}}
+
+                        {{#if link}}
+                            Для оплаты заказа на сумму {{summ}} <i class="fa fa-rouble"></i> вы будете перенаправленны в сервис Робокасса по
+                            ссылке <a href="{{link}}">{{link}}</a>
+                            <script type="text/javascript">
+                                //setTimeout(function(){window.location = '{{link}}'}, 5000)
+                            </script>
+                        {{else}}
                         <h4 class="light-weight uppercase">
                             Наш менеджер свяжется с вами в течении нескольких минут чтобы подтвердить заказ указанным способом.
                         </h4>
+
+                        {{/if}}
+
+                        {{/if}}
                         <p></p>
                         <p></p>
                         <p></p>

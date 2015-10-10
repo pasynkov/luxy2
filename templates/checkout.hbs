@@ -126,13 +126,75 @@
                         <i class="fa fa-check form-control-feedback hide"></i>
                     </div>
                 </div>
-
-
             </div>
+
+            <div class="form-group">
+                <div class="payment-method">
+                    <label for="delivery"><h3>Способ доставки</h3></label>
+                    <div class="radio light">
+                        <label><input type="radio" name="delivery" id="delivery01" checked value="2"> Почта России</label>
+                    </div>
+                    <p>
+                        Ваш заказ будет отправлен почтой России, получить его вы сможете в вашем почтовом отделении.
+                        <br/><b>Доставка Почтой России осуществляется только по предоплате.</b>
+                        <br/>Сроки доставки зависят от удаленности населенного пункта
+                    </p>
+                    <div class="radio light">
+                        <label><input type="radio" name="delivery" id="delivery02" value="1"> Постаматы "Пикпоинт"</label>
+                    </div>
+
+                    <p>
+                        Ваш заказ будет доставлен в выбранный вами почтовый терминал, откуда вы сможете забрать его в любое удобное для вас время.
+                        Простая инструкция по получению заказа:
+                    </p>
+                    <ol>
+                        <li>Выбираете ближайший к вам почтовый терминал.</li>
+                        <li>В момент доставки заказа в терминал вам приходит SMS с кодом получения заказа.</li>
+                        <li>В удобное время приходите к выбранному терминалу и вводите код, присланный в SMS-сообщении.</li>
+                        <li>Если вы выбрали оплату при получении, то оплачиваете заказ наличными или картой непосредственно у терминала.</li>
+                        <li>Забираете свой заказ.</li>
+                    </ol>
+                    <p>
+                        Советуем так же посмотреть <a href="http://pickpoint.ru/postamats/" target="_blank" style="color:white;text-decoration: underline;">карту постаматов</a>,
+                        чтобы убедиться в наличии постамата в вашем городе.
+                    </p>
+                    <div class="radio light">
+                        <label><input type="radio" name="delivery" id="delivery03" value="0"> Курьером</label>
+                    </div>
+                    <p>
+                        Курьер доставит ваш заказ прямо к вашему порогу.
+                        <b>Доставка осуществляется по Москве и ближайшему Подмосковью с 10-00 до 22-00 через день после подтверждения заказа.</b>
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="payment-method">
+                    <label for="payment"><h3>Способ оплаты</h3></label>
+                    <div class="radio light">
+                        <label><input type="radio" name="payment" id="payment01" checked value="0"> Оплатить сейчас через "Робокассу"</label>
+                    </div>
+                    <p>
+                        Без дополнительных платежей и комиссий.
+                    </p>
+                    <div class="radio light">
+                        <label><input type="radio" name="payment" id="payment02" value="1"> Оплатить при получении</label>
+                    </div>
+                    <p>
+                        Оплата наложенным платежом не поддерживается при доставке Почтой России
+                    </p>
+                </div>
+            </div>
+
+
             <h3>Комментарий к заказу</h3>
             <div class="form-group">
                 <label class="sr-only" for="comment">Комментарий к заказу</label>
                 <textarea class="form-control" name="comment" id="comment" rows="4" placeholder="Оставьте комментарий для менеджера"></textarea>
+            </div>
+
+            <div class="form-group">
+                <input class="btn btn-success btn-block" type="submit" name="place-order" value="Заказать">
             </div>
         </div>
 
@@ -186,6 +248,8 @@
 
 <script type="text/javascript" src="https://dadata.ru/static/js/jquery.suggestions-4.6.min.js"></script>
 <script type="text/javascript">
+
+
 var toggleError = function($el,hasError){
     if(typeof hasError == "undefined"){
         hasError = false;
@@ -336,6 +400,39 @@ $("#checkout-form").submit(function(){
     if(!$("#phone").val() || $("#phone").is(":hidden")){
         $("#contact").val('').focus();
         return false;
+    }
+
+    var data = $("#checkout-form").serializeArray();
+    var delivery, payment;
+
+    for( var i in data) {
+        if (data[i].name == "delivery"){
+            delivery = data[i].value * 1;
+        }
+
+        if (data[i].name == "payment"){
+            payment = data[i].value * 1;
+        }
+    }
+    console.log(delivery, payment);
+    if (delivery == 2){
+        if (payment){
+            var $modal = $("#cityModal").clone();
+            $modal.attr("id", "checkoutModal");
+            $modal.find(".modal-header h2").html("Ошибка при выборе способа доставки!");
+            $modal.find(".modal-header p").html("");
+
+            var messages = [
+                "<p>К сожалению, LUXYsexy не поддерживает оплату наложенным платежом при доставке Почтой России.<p>",
+                "<p>Пожалуйста выберите другой способ оплаты или доставки.</p>",
+                '<p><button type="button" class="btn btn-success" data-dismiss="modal" aria-hidden="true">Хорошо, мне все ясно.</button></p>'
+            ];
+
+            $modal.find(".modal-body").html(messages.join(""));
+            $("body").append($modal);
+            $modal.modal("show");
+            return false;
+        }
     }
 });
 

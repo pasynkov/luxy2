@@ -21,6 +21,12 @@ projectConfig =
       password: "085bdb2261"
       database: "luxy"
 
+    web:
+      enable: true
+      static: "static"
+      cacheStatic: true
+      port: 8090
+
   city: {
     redirect: true
     defaultCity: "www"

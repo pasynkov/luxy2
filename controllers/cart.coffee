@@ -3,6 +3,7 @@
 async = require "async"
 _ = require "underscore"
 handlebars = require "handlebars"
+Robokassa = require "robokassa"
 
 ContextDecorator = require "../decorators/context"
 StaticDecorator = require "../decorators/static"
@@ -21,6 +22,64 @@ class ShopController
     @shopConfig = vakoo.configurator.config.shop
 
     @logger = vakoo.logger.context
+
+    @robo = new Robokassa {
+      login: "luxy.test"
+      password: "Webadmin45"
+      url: "http://test.robokassa.ru/Index.aspx"
+    }
+
+  billing: ->
+
+    act = @context.request.query.act
+
+    if act is "result"
+
+      if @robo.checkPayment @context.request.body
+        console.log @context.request.body
+      else
+        console.log @context.request.body
+
+      @context.sendHtml "ok"
+
+    else
+
+      async.waterfall(
+        [
+          async.apply async.parallel, {
+            template: async.apply @staticDecorator.createTemplate, "thanks"
+            breadcrumbs: async.apply async.waterfall, [
+              (miniTaskCallback)->
+                miniTaskCallback null, crumbs: [
+                  {title: "Главная", url: "/"}
+                  {title: "Спасибо за покупку!"}
+                ]
+              @staticDecorator.getBreadcrumbs
+            ]
+          }
+          ({template, breadcrumbs}, taskCallback)=>
+
+            message = "Вы успешно оплатили заказ! С минуты на минуту с вами свяжется наш менеджер!"
+
+            if act is "fail"
+              message = "Оплата не была проведена. Возможно это ошибка? Свяжитесь с нами по E-mail <a href=\"mailto:shop@luxy.sexy\">shop@luxy.sexy</a>"
+
+            taskCallback(
+              err
+              template({
+                message
+                breadcrumbs
+                city: @context.city
+              })
+              {title: "Спасибо за покупку!"}
+            )
+
+            @staticDecorator.createPage
+        ]
+        @context.sendHtml
+      )
+
+
 
   index: ->
     data = null
@@ -147,7 +206,6 @@ class ShopController
 
           orderTotal = total + +delivery
 
-
           taskCallback(
             null
             template({
@@ -205,15 +263,33 @@ class ShopController
               return product
           )
 
+          order.r_id = Math.round(new Date().getTime()/1000)
+
           vakoo.mongo.collectionNative("orders").insert order, (err, r)=>
 
             order._id = r?.ops[0]?._id
 
             vakoo.redis.client.publish "luxy_order", "New order. ID is `#{order._id}`"
 
+            link = null
+
+            summ = order.total + 0
+
+            if order.total < @shopConfig.freeDelivery
+              summ += @shopConfig.deliveryCost
+
+            if +order.payment is 0
+              link = @robo.merchantUrl {
+                id: order.r_id
+                summ
+                description: "Оплата заказа в интернет-магазине LUXYsexy"
+              }
+
             taskCallback(
               err
               template({
+                link
+                summ: @utilsDecorator.numberFormat(summ)
                 products
                 breadcrumbs
                 order: JSON.stringify order
