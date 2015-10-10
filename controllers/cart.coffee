@@ -5,6 +5,8 @@ _ = require "underscore"
 handlebars = require "handlebars"
 Robokassa = require "robokassa"
 
+crypto = require "crypto"
+
 ContextDecorator = require "../decorators/context"
 StaticDecorator = require "../decorators/static"
 StorageDecorator = require "../decorators/storage"
@@ -29,6 +31,17 @@ class ShopController
       url: "http://test.robokassa.ru/Index.aspx"
     }
 
+    @robo.pass2 = "Webadmin45_"
+
+    @robo.checkPayment = (params)->
+
+      md5 = crypto.createHash("md5").update(
+        "#{params.OutSum}:#{params.InvId}:#{@pass2}"
+      )
+      console.log md5
+      return md5 is params.SignatureValue
+
+
   billing: ->
 
     act = @context.request.query.act
@@ -40,7 +53,7 @@ class ShopController
         vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result: 1}}, @context.sendHtml
       else
         @logger.info "Fail payment order `#{@context.request.body.InvId}`"
-        vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result: 1}}, @context.sendHtml
+        vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result: 0}}, @context.sendHtml
 
     else
 
