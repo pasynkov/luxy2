@@ -9,7 +9,7 @@ config =
       startupClean: true
 
     mongo:
-      name: "luxy"
+      name: "vakoo"
       enable: true
 
     mysql:
