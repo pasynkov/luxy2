@@ -36,11 +36,11 @@ class ShopController
     if act is "result"
 
       if @robo.checkPayment @context.request.body
-        console.log @context.request.body
+        @logger.info "Successfully payment order `#{@context.request.body.InvId}`"
+        vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result: 1}}, @context.sendHtml
       else
-        console.log @context.request.body
-
-      @context.sendHtml "ok"
+        @logger.info "Fail payment order `#{@context.request.body.InvId}`"
+        vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result: 1}}, @context.sendHtml
 
     else
 
@@ -65,7 +65,7 @@ class ShopController
               message = "Оплата не была проведена. Возможно это ошибка? Свяжитесь с нами по E-mail <a href=\"mailto:shop@luxy.sexy\">shop@luxy.sexy</a>"
 
             taskCallback(
-              err
+              null
               template({
                 message
                 breadcrumbs
