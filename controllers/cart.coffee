@@ -37,7 +37,7 @@ class ShopController
 
       md5 = crypto.createHash("md5").update(
         "#{params.OutSum}:#{params.InvId}:#{@pass2}"
-      )
+      ).digest("hex")
       console.log md5
       return md5 is params.SignatureValue
 
