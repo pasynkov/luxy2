@@ -3,7 +3,7 @@
 async = require "async"
 _ = require "underscore"
 handlebars = require "handlebars"
-Robokassa = require "robokassa"
+Robokassa = require "robo-kassa"
 
 crypto = require "crypto"
 
@@ -27,20 +27,9 @@ class ShopController
 
     @robo = new Robokassa {
       login: "luxy.sexy"
-      password: "Webadmin45"
-#      url: "http://test.robokassa.ru/Index.aspx"
+      password1: "Webadmin45"
+      password2: "Webadmin45_"
     }
-
-    @robo.pass2 = "Webadmin45_"
-
-    @robo.checkPayment = (params)->
-
-      md5 = crypto.createHash("md5").update(
-        "#{params.OutSum}:#{params.InvId}:#{@pass2}"
-      ).digest("hex")
-
-      return md5.toUpperCase() is params.SignatureValue.toUpperCase()
-
 
   billing: ->
 
@@ -48,7 +37,7 @@ class ShopController
 
     if act is "result" and @context.request.method is "POST"
 
-      payment_result = @robo.checkPayment(@context.request.body)
+      payment_result = @robo.checkPaymentParams @context.request.body
 
       if payment_result
         @logger.info "Successfully payment order `#{@context.request.body.InvId}`"
@@ -296,7 +285,7 @@ class ShopController
               summ += @shopConfig.deliveryCost
 
             if +order.payment is 0
-              link = @robo.merchantUrl {
+              link = @robo.createUrl {
                 id: order.r_id
                 summ
                 description: "Оплата заказа в интернет-магазине LUXYsexy"
