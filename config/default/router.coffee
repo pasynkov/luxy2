@@ -17,6 +17,7 @@ class Router
 
 
     @webServer.addRoute "post", "/billing", "cart", "billing"
+    @webServer.addRoute "get", "/billing/:result", "cart", "billing"
 
 
 module.exports = Router

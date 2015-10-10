@@ -46,14 +46,16 @@ class ShopController
 
     act = @context.request.query.act
 
-    if act is "result"
-      console.log @context.request.body
-      if @robo.checkPayment(@context.request.body)
+    if act is "result" and @context.request.method is "POST"
+
+      payment_result = @robo.checkPayment(@context.request.body)
+
+      if payment_result
         @logger.info "Successfully payment order `#{@context.request.body.InvId}`"
-        vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result: 1}}, @context.sendHtml
       else
         @logger.info "Fail payment order `#{@context.request.body.InvId}`"
-        vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result: 0}}, @context.sendHtml
+
+      vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result}}, @context.sendHtml
 
     else
 
@@ -74,7 +76,7 @@ class ShopController
 
             message = "Вы успешно оплатили заказ! С минуты на минуту с вами свяжется наш менеджер!"
 
-            if act is "fail"
+            if @context.requester.params.result is "fail"
               message = "Оплата не была проведена. Возможно это ошибка? Свяжитесь с нами по E-mail <a href=\"mailto:shop@luxy.sexy\">shop@luxy.sexy</a>"
 
             taskCallback(
@@ -87,7 +89,7 @@ class ShopController
               {title: "Спасибо за покупку!"}
             )
 
-            @staticDecorator.createPage
+          @staticDecorator.createPage
         ]
         @context.sendHtml
       )
