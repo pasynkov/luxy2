@@ -5,8 +5,13 @@ projectConfig =
     enable: true
 
     redis:
-      enable: true
-      startupClean: true
+      main:
+        enable: true
+        startupClean: true
+      remote:
+        enable: true
+        host: "db.vakoo.ru"
+        password: "085bdb2261"
 
     mongo:
       name: "luxy"
@@ -16,8 +21,8 @@ projectConfig =
       enable: true
 
     mysql:
-      host: "rangg.ru"
-      user: "root"
+      host: "db.vakoo.ru"
+      user: "luxy"
       password: "085bdb2261"
       database: "luxy"
 

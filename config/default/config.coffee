@@ -5,8 +5,13 @@ config =
     enable: true
 
     redis:
-      enable: true
-      startupClean: true
+      main:
+        enable: true
+        startupClean: true
+      remote:
+        enable: true
+        host: "db.vakoo.ru"
+        password: "085bdb2261"
 
     mongo:
       name: "vakoo"

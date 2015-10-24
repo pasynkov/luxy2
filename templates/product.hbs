@@ -17,14 +17,14 @@
                 <div class="prod-gal master-slider" id="prod-gal">
                     <!--Slide1-->
                     <div class="ms-slide">
-                        <img src="/masterslider/blank.gif" data-src="http://luxy.sexy{{product.image.path}}" alt="{{product.title}}"/>
-                        <img class="ms-thumb" src="http://luxy.sexy{{product.image.path}}" alt="thumb" />
+                        <img src="/masterslider/blank.gif" data-src="http://static.luxy.sexy{{product.image.path}}" alt="{{product.title}}"/>
+                        <img class="ms-thumb" src="http://static.luxy.sexy{{product.image.path}}" alt="thumb" />
                     </div>
 
                     {{#each product.images}}
                         <div class="ms-slide">
                             <img src="/masterslider/blank.gif" data-src="http://luxy.sexy{{path}}" alt="{{alt}}"/>
-                            <img class="ms-thumb" src="http://luxy.sexy{{path}}" alt="thumb" />
+                            <img class="ms-thumb" src="http://static.luxy.sexy{{path}}" alt="thumb" />
                         </div>
                     {{/each}}
                 </div>
@@ -187,7 +187,7 @@ font-weight: 200;">Y</span></span></h1>
             <div class="container">
                 <div class="row">
                     <div class="col-lg-4 col-md-5 col-sm-5">
-                        <img class="center-block" src="http://luxy.sexy{{product.image.path}}" alt="{{product.title}} {{product.shortDesc}}"/>
+                        <img class="center-block" src="http://static.luxy.sexy{{product.image.path}}" alt="{{product.title}} {{product.shortDesc}}"/>
                     </div>
                     <div class="col-lg-8 col-md-7 col-sm-7">
                         <p class="p-style2">{{{product.desc}}}</p>

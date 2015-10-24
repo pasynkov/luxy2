@@ -41,10 +41,10 @@ class ShopController
 
       if payment_result
         @logger.info "Successfully payment order `#{@context.request.body.InvId}`"
-        vakoo.redis.client.publish "luxy_order", "Successfully payment order `#{@context.request.body.InvId}`"
+        vakoo.storage.redis.remote.client.publish "luxy_order", "Successfully payment order `#{@context.request.body.InvId}`"
       else
         @logger.info "Fail payment order `#{@context.request.body.InvId}`"
-        vakoo.redis.client.publish "luxy_order", "Fail payment order `#{@context.request.body.InvId}`"
+        vakoo.storage.redis.remote.client.publish "luxy_order", "Fail payment order `#{@context.request.body.InvId}`"
 
       vakoo.mongo.collectionNative("orders").update {r_id: +@context.request.body.InvId}, {$set: {payment_result}}, @context.sendHtml
 
@@ -275,7 +275,7 @@ class ShopController
 
             order._id = r?.ops[0]?._id
 
-            vakoo.redis.client.publish "luxy_order", "New order. ID is `#{order._id}`"
+            vakoo.storage.redis.remote.client.publish "luxy_order", "New order. ID is `#{order._id}`"
 
             link = null
 
