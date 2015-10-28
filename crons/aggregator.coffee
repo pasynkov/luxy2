@@ -613,7 +613,7 @@ class Aggregator
               }
 
             @updated++
-            @mongo.collectionNative(COL_PRODUCTS).update(
+            @mongo.collectionNative(COL_PRODUCTS).updateOne(
               {_id: mongoObj._id}
               {
                 $set:
