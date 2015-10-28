@@ -568,6 +568,8 @@ class Aggregator
                     if exists
                       return taskCallback()
 
+                    return @addImageToDownloadQueue photoLink, imagePath, taskCallback
+
                     request.get photoLink
                     .on "error", (err)=>
                       @addImageToDownloadQueue photoLink, imagePath, taskCallback
