@@ -549,7 +549,7 @@ class Aggregator
                 return done()
 
               if +product.sku is 37290
-                console.log product.photos
+                console.log product.photos, imagePath
 
 
               async.waterfall(
