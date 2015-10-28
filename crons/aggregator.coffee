@@ -545,9 +545,11 @@ class Aggregator
               imagePath = path.resolve photoPath, "#{pIndex}#{path.extname photoLink}"
 
               unless @config.storeFiles
-                console.log "skip store files"
                 product.photos[pIndex] = imagePath
                 return done()
+
+              if +product.sku is 37290
+                console.log product.photos
 
 
               async.waterfall(
