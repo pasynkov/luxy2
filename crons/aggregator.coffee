@@ -599,6 +599,19 @@ class Aggregator
 
         (mongoObj, taskCallback)=>
           if mongoObj
+            if +product.sku is 37290
+              console.log "update"
+              console.log {$set:
+                available: product.available
+                price: product.price
+                tradePrice: product.tradePrice
+                lastUpdate: new Date()
+                distributor_sku: product.distributor_sku
+                images: @createObject(product).images
+                image: @createObject(product).image
+                isNew: false
+              }
+
             @updated++
             @mongo.collectionNative(COL_PRODUCTS).update(
               {_id: mongoObj._id}
@@ -608,6 +621,8 @@ class Aggregator
                 tradePrice: product.tradePrice
                 lastUpdate: new Date()
                 distributor_sku: product.distributor_sku
+                images: @createObject(product).images
+                image: @createObject(product).image
                 isNew: false
               }
               taskCallback
