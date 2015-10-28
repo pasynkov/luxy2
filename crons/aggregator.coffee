@@ -548,11 +548,6 @@ class Aggregator
                 product.photos[pIndex] = imagePath
                 return done()
 
-              if +product.sku is 37290
-                console.log product.photos, imagePath
-                console.log product
-
-
               async.waterfall(
                 [
                   (taskCallback)->
@@ -599,19 +594,6 @@ class Aggregator
 
         (mongoObj, taskCallback)=>
           if mongoObj
-            if +product.sku is 37290
-              console.log "update"
-              console.log {$set:
-                available: product.available
-                price: product.price
-                tradePrice: product.tradePrice
-                lastUpdate: new Date()
-                distributor_sku: product.distributor_sku
-                images: @createObject(product).images
-                image: @createObject(product).image
-                isNew: false
-              }
-
             @updated++
             @mongo.collectionNative(COL_PRODUCTS).updateOne(
               {_id: mongoObj._id}
@@ -626,12 +608,7 @@ class Aggregator
                   image: @createObject(product).image
                   isNew: false
               }
-              (err, res)->
-                if +product.sku is 37290
-                  console.log typeof mongoObj._id
-                  console.log mongoObj
-                  console.log err, res
-                taskCallback()
+              taskCallback
             )
           else
             @inserted++
