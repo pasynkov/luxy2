@@ -595,9 +595,6 @@ class Aggregator
         (mongoObj, taskCallback)=>
           if mongoObj
             @updated++
-            if +product.sku is 37290
-              console.log product
-
             @mongo.collectionNative(COL_PRODUCTS).updateOne(
               {_id: mongoObj._id}
               {
