@@ -32,7 +32,7 @@ config =
     csv: "http://stripmag.ru/datafeed/p5s.csv"
     xml: "http://uslada-shop.ru/yml/offers.xml"
     filePath: "/home/web/static/luxy"
-    storeFiles: false
+    storeFiles: true
   }
 
 
