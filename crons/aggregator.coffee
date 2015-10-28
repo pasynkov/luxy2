@@ -625,7 +625,11 @@ class Aggregator
                 image: @createObject(product).image
                 isNew: false
               }
-              taskCallback
+              (err, res)->
+                if +product.sku is 37290
+                  console.log mongoObj
+                  console.log err, res
+                taskCallback()
             )
           else
             @inserted++
